@@ -302,6 +302,12 @@ Update data and save the instance:
     $user->name = 'Paris';
     $user->save();
 
+To create a new (empty) instance, use the `create` method:
+
+    $user = Model::factory('User')->create();
+    $user->name = 'Paris';
+    $user->save();
+
 Of course, because these objects are instances of your base model classes, you can also call methods that you have defined on them:
 
     class User extends Model {
