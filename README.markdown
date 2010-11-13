@@ -349,6 +349,21 @@ However, there are several simple ways that you could add validation to your mod
 
 The only configuration options provided by Paris itself are the `$_table` and `$_id_column` static properties on model classes. To configure the database connection, you should use Idiorm's configuration system via the `ORM::configure` method. **See [Idiorm's documentation](http://github.com/j4mie/idiorm/) for full details.**
 
+### Transactions ###
+
+Paris (or Idiorm) doesn't supply any extra methods to deal with transactions, but it's very easy to use PDO's built-in methods:
+
+    // Start a transaction
+    ORM::get_db()->beginTransaction();
+
+    // Commit a transaction
+    ORM::get_db()->commit();
+
+    // Roll back a transaction
+    ORM::get_db()->rollBack();
+
+For more details, see [the PDO documentation on Transactions](http://www.php.net/manual/en/pdo.transactions.php).
+
 ### Query logging ###
 
 Idiorm can log all queries it executes. To enable query logging, set the `logging` option to `true` (it is `false` by default).
