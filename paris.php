@@ -329,6 +329,13 @@
         }
 
         /**
+         * Magic isset method, allows isset($model->property) to work correctly.
+         */
+        public function __isset($property) {
+            return $this->orm->__isset($property);
+        }
+
+        /**
          * Getter method, allows $model->get('property') access to data
          */
         public function get($property) {
