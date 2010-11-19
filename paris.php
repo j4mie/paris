@@ -93,12 +93,11 @@
         }
 
         /**
-         * Wrap Idiorm's find_one method to return
-         * an instance of the class associated with
-         * this wrapper instead of the raw ORM class.
+         * Method to create an instance of the model class
+         * associated with this wrapper and populate
+         * it with the supplied Idiorm instance.
          */
-        public function find_one($id=null) {
-            $orm = parent::find_one($id);
+        protected function _create_model_instance($orm) {
             if ($orm === false) {
                 return false;
             }
@@ -108,19 +107,21 @@
         }
 
         /**
+         * Wrap Idiorm's find_one method to return
+         * an instance of the class associated with
+         * this wrapper instead of the raw ORM class.
+         */
+        public function find_one($id=null) {
+            return $this->_create_model_instance(parent::find_one($id));
+        }
+
+        /**
          * Wrap Idiorm's find_many method to return
          * an array of instances of the class associated
          * with this wrapper instead of the raw ORM class.
          */
         public function find_many() {
-            $orms = parent::find_many();
-            $models = array();
-            foreach ($orms as $orm) {
-                $model = new $this->_class_name();
-                $model->set_orm($orm);
-                $models[] = $model;
-            }
-            return $models;
+            return array_map(array($this, '_create_model_instance'), parent::find_many());
         }
 
         /**
@@ -129,9 +130,7 @@
          * this wrapper instead of the raw ORM class.
          */
         public function create($data=null) {
-            $model = new $this->_class_name();
-            $model->set_orm(parent::create($data));
-            return $model;
+            return $this->_create_model_instance(parent::create($data));
         }
     }
 
