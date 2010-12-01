@@ -1,6 +1,8 @@
 Paris
 =====
 
+[http://j4mie.github.com/idiormandparis/](http://j4mie.github.com/idiormandparis/)
+
 A lightweight Active Record implementation for PHP5.
 
 Built on top of [Idiorm](http://github.com/j4mie/idiorm/).
