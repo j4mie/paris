@@ -310,6 +310,10 @@ To create a new (empty) instance, use the `create` method:
     $user->name = 'Paris';
     $user->save();
 
+To check whether a property has been changed since the object was created (or last saved), call the `is_dirty` method:
+
+    $name_has_changed = $person->is_dirty('name'); // Returns true or false
+
 Of course, because these objects are instances of your base model classes, you can also call methods that you have defined on them:
 
     class User extends Model {
