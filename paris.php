@@ -151,6 +151,10 @@
         // Default foreign key suffix used by relationship methods
         const DEFAULT_FOREIGN_KEY_SUFFIX = '_id';
 
+        // The ORM wrapper class to use. If you have subclassed or replaced
+        // ORMWrapper (above) you may set this to your preferred class.
+        protected static $_orm_wrapper_class = 'ORMWrapper';
+
         /**
          * The ORM instance used by this model 
          * instance to communicate with the database.
@@ -226,7 +230,8 @@
          */
         public static function factory($class_name) {
             $table_name = self::_get_table_name($class_name);
-            $wrapper = ORMWrapper::for_table($table_name);
+            $orm_wrapper_class = self::$_orm_wrapper_class;
+            $wrapper = call_user_func(array($orm_wrapper_class, 'for_table'), $table_name);
             $wrapper->set_class_name($class_name);
             $wrapper->use_id_column(self::_get_id_column_name($class_name));
             return $wrapper;
