@@ -22,6 +22,17 @@ Features
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
 * Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
 
+Changelog
+---------
+
+#### 1.0.0 - released 2010-12-01
+
+* Initial release
+
+#### 1.0.1 - released 2011-01-24
+
+* Add `is_dirty` method
+
 Philosophy
 ----------
 
@@ -309,6 +320,10 @@ To create a new (empty) instance, use the `create` method:
     $user = Model::factory('User')->create();
     $user->name = 'Paris';
     $user->save();
+
+To check whether a property has been changed since the object was created (or last saved), call the `is_dirty` method:
+
+    $name_has_changed = $person->is_dirty('name'); // Returns true or false
 
 Of course, because these objects are instances of your base model classes, you can also call methods that you have defined on them:
 

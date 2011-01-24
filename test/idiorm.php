@@ -61,6 +61,7 @@
             'username' => null,
             'password' => null,
             'driver_options' => null,
+            'identifier_quote_character' => null, // if this is null, will be autodetected
             'logging' => false,
         );
 
@@ -159,6 +160,7 @@
          * this will normally be the first method called in a chain.
          */
         public static function for_table($table_name) {
+            self::_setup_db();
             return new self($table_name);
         }
 
@@ -171,18 +173,52 @@
                 $username = self::$_config['username'];
                 $password = self::$_config['password'];
                 $driver_options = self::$_config['driver_options'];
-                self::$_db = new PDO($connection_string, $username, $password, $driver_options);
-                self::$_db->setAttribute(PDO::ATTR_ERRMODE, self::$_config['error_mode']);
+                $db = new PDO($connection_string, $username, $password, $driver_options);
+                $db->setAttribute(PDO::ATTR_ERRMODE, self::$_config['error_mode']);
+                self::set_db($db);
             }
         }
 
         /**
-         * This can be called if the ORM should use a ready-instantiated
-         * PDO object as its database connection. Won't be used in normal
-         * operation, but it's here in case it's needed.
+         * Set the PDO object used by Idiorm to communicate with the database.
+         * This is public in case the ORM should use a ready-instantiated
+         * PDO object as its database connection.
          */
         public static function set_db($db) {
             self::$_db = $db;
+            self::_setup_identifier_quote_character();
+        }
+
+        /**
+         * Detect and initialise the character used to quote identifiers
+         * (table names, column names etc). If this has been specified
+         * manually using ORM::configure('identifier_quote_character', 'some-char'),
+         * this will do nothing.
+         */
+        public static function _setup_identifier_quote_character() {
+            if (is_null(self::$_config['identifier_quote_character'])) {
+                self::$_config['identifier_quote_character'] = self::_detect_identifier_quote_character();
+            }
+        }
+
+        /**
+         * Return the correct character used to quote identifiers (table
+         * names, column names etc) by looking at the driver being used by PDO.
+         */
+        protected static function _detect_identifier_quote_character() {
+            switch(self::$_db->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+                case 'pgsql':
+                case 'sqlsrv':
+                case 'dblib':
+                case 'mssql':
+                case 'sybase':
+                    return '"';
+                case 'mysql':
+                case 'sqlite':
+                case 'sqlite2':
+                default:
+                    return '`';
+            }
         }
 
         /**
@@ -191,7 +227,7 @@
          * required outside the class.
          */
         public static function get_db() {
-            self::_setup_db();
+            self::_setup_db(); // required in case this is called before Idiorm is instantiated
             return self::$_db;
         }
 
@@ -498,7 +534,7 @@
         /**
          * Internal method to add a WHERE condition to the query
          */
-        protected function _add_where($fragment, $values) {
+        protected function _add_where($fragment, $values=array()) {
             if (!is_array($values)) {
                 $values = array($values);
             }
@@ -544,6 +580,13 @@
          */
         public function where_equal($column_name, $value) {
             return $this->_add_simple_where($column_name, '=', $value);
+        }
+
+        /**
+         * Add a WHERE column != value clause to your query.
+         */
+        public function where_not_equal($column_name, $value) {
+            return $this->_add_simple_where($column_name, '!=', $value);
         }
 
         /**
@@ -614,11 +657,27 @@
         }
 
         /**
+         * Add a WHERE column IS NULL clause to your query
+         */
+        public function where_null($column_name) {
+            $column_name = $this->_quote_identifier($column_name);
+            return $this->_add_where("{$column_name} IS NULL");
+        }
+
+        /**
+         * Add a WHERE column IS NOT NULL clause to your query
+         */
+        public function where_not_null($column_name) {
+            $column_name = $this->_quote_identifier($column_name);
+            return $this->_add_where("{$column_name} IS NOT NULL");
+        }
+
+        /**
          * Add a raw WHERE clause to the query. The clause should
          * contain question mark placeholders, which will be bound
          * to the parameters supplied in the second argument.
          */
-        public function where_raw($clause, $parameters) {
+        public function where_raw($clause, $parameters=array()) {
             return $this->_add_where($clause, $parameters);
         }
 
@@ -790,7 +849,8 @@
          * are compatible with (at least) MySQL and SQLite.
          */
         protected function _quote_identifier_part($part) {
-            return "`$part`";
+            $quote_character = self::$_config['identifier_quote_character'];
+            return $quote_character . $part . $quote_character;
         }
 
         /**
@@ -799,7 +859,6 @@
          */
         protected function _run() {
             $query = $this->_build_select();
-            self::_setup_db();
             self::_log_query($query, $this->_values);
             $statement = self::$_db->prepare($query);
             $statement->execute($this->_values);
@@ -861,6 +920,14 @@
         }
 
         /**
+         * Check whether the given field has been changed since this
+         * object was saved.
+         */
+        public function is_dirty($key) {
+            return isset($this->_dirty_fields[$key]);
+        }
+
+        /**
          * Save any fields which have been modified on this object
          * to the database.
          */
@@ -879,7 +946,6 @@
                 $query = $this->_build_insert();
             }
 
-            self::_setup_db();
             self::_log_query($query, $values);
             $statement = self::$_db->prepare($query);
             $success = $statement->execute($values);
@@ -892,6 +958,7 @@
                 }
             }
 
+            $this->_dirty_fields = array();
             return $success;
         }
 
@@ -940,7 +1007,6 @@
                 "= ?",
             ));
             $params = array($this->id());
-            self::_setup_db();
             self::_log_query($query, $params);
             $statement = self::$_db->prepare($query);
             return $statement->execute($params);
@@ -955,6 +1021,10 @@
 
         public function __set($key, $value) {
             $this->set($key, $value);
+        }
+
+        public function __isset($key) {
+            return isset($this->_data[$key]);
         }
     }
 

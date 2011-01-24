@@ -349,6 +349,13 @@
         }
 
         /**
+         * Check whether the given field has changed since the object was created or saved
+         */
+        public function is_dirty($property) {
+            return $this->orm->is_dirty($property);
+        }
+
+        /**
          * Wrapper for Idiorm's as_array method.
          */
         public function as_array() {
