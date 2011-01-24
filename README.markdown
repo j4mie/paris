@@ -22,6 +22,17 @@ Features
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
 * Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
 
+Changelog
+---------
+
+#### 1.0.0 - released 2010-12-01
+
+* Initial release
+
+#### 1.0.1 - released 2011-01-24
+
+* Add `is_dirty` method
+
 Philosophy
 ----------
 
