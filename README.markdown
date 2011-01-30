@@ -33,6 +33,10 @@ Changelog
 
 * Add `is_dirty` method
 
+#### 1.1.1 - released 2011-01-30
+
+* Fix incorrect tests, see issue #12
+
 Philosophy
 ----------
 
