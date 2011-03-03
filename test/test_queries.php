@@ -195,5 +195,14 @@
     $expected = "SELECT `author_two`.* FROM `author_two` JOIN `wrote_the_book` ON `author_two`.`id` = `wrote_the_book`.`custom_author_id` WHERE `wrote_the_book`.`custom_book_id` = '1'";
     Tester::check_equal("has_many_through relation with custom intermediate model and key names", $expected);
 
+    class ResultSetItem extends Model {
+    }
+
+    $items = Model::factory('ResultSetItem')->find_many()
+        ->set('field', 'value')
+        ->save();
+    $expected = "UPDATE `result_set_item` SET `field` = 'value' WHERE `id` = '1'";
+    Tester::check_equal("Calling model methods on ResultSet", $expected);
+
     Tester::report();
 ?>

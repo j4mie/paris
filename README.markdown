@@ -21,6 +21,7 @@ Features
 * Built on top of [PDO](http://php.net/pdo).
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
 * Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
+* Supports jQuery-like syntax for working with collections of models
 
 Changelog
 ---------
@@ -116,7 +117,9 @@ The only differences between using Idiorm and using Paris for querying are as fo
 
 2. The `find_one` and `find_many` methods will return instances of *your model subclass*, instead of the base `ORM` class. Like Idiorm, `find_one` will return a single instance or `false` if no rows matched your query, while `find_many` will return an array of instances, which may be empty if no rows matched.
 
-3. Custom filtering, see next section.
+3. The `find_many` method will return an instance of ResultSet instead of an array. See the section on working with result sets.
+
+4. Custom filtering, see next section.
 
 You may also retrieve a count of the number of rows returned by your query. This method behaves exactly like Idiorm's `count` method:
 
@@ -371,6 +374,27 @@ It's generally considered a good idea to centralise your data validation in a si
 Despite this, Paris doesn't provide any built-in support for validation. This is because validation is potentially quite complex, and often very application-specific. Paris is deliberately quite ignorant about your actual data - it simply executes queries, and gives you the responsibility of making sure the data inside your models is valid and correct. Adding a full validation framework to Paris would probably require more code than Paris itself!
 
 However, there are several simple ways that you could add validation to your models without any help from Paris. You could override the `save()` method, check the data is valid, and return `false` on failure, or call `parent::save()` on success. You could create your own subclass of the `Model` base class and add your own generic validation methods. Or you could write your own external validation framework which you pass model instances to for checking. Choose whichever approach is most suitable for your own requirements.
+
+### Working with result sets ###
+
+Paris makes it easy to work with collections of model instances, such as those returned by a `find_many` call. Unlike Idiorm, which returns an array of objects, Paris returns a `ResultSet` object. A `ResultSet` object can be used in any way that an array can be used with one additional feature: any method calls made on the `ResultSet` will be called on *all* the objects in the set. Aditionally, such calls will always return the `ResultSet` object itself, making for a fluent interface. This allows for a jQuery-like syntax when working with result sets:
+
+    // Instead of this...
+    $people = Model::factory('Person')->find_many();
+    foreach ($people as $person) {
+        $person->age = 50;
+        $person->save();
+    }
+
+    // ...you can do this
+    Model::factory('Person')->find_many()
+        ->set('age', 50)
+        ->save();
+
+    // Convenient mass-delete
+    Model::factory('Widget')->filter('expired')->find_many()->delete();
+
+You can use this syntax with any method defined in your model.
 
 ### Configuration ###
 
