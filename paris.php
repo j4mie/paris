@@ -191,7 +191,11 @@
          * For example, CarTyre would be converted to car_tyre.
          */
         protected static function _class_name_to_table_name($class_name) {
-            return strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $class_name));
+            return strtolower(preg_replace(
+                array('/\\\\/', '/(?<=[a-z])([A-Z])/', '/__/'),
+                array('_',      '_$1',                 '_'),
+                $class_name
+            ));
         }
 
         /**
