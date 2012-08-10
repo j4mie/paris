@@ -268,7 +268,7 @@
             $associated_table_name = self::_get_table_name($associated_class_name);
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $associated_table_name);
             $associated_object_id = $this->$foreign_key_name;
-            return self::factory($associated_class_name)->where_id_is($associated_object_id);
+            return self::factory($associated_class_name)->find_one($associated_object_id);
         }
 
         /**
