@@ -344,7 +344,7 @@
         /**
          * Setter method, allows $model->set('property', 'value') access to data.
          */
-        public function set($property, $value) {
+        public function set($property, $value = null) {
             $this->orm->set($property, $value);
         }
 
