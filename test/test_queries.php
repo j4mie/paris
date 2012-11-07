@@ -194,6 +194,10 @@
     $authors2 = $book2->authors()->find_many();
     $expected = "SELECT `author_two`.* FROM `author_two` JOIN `wrote_the_book` ON `author_two`.`id` = `wrote_the_book`.`custom_author_id` WHERE `wrote_the_book`.`custom_book_id` = '1'";
     Tester::check_equal("has_many_through relation with custom intermediate model and key names", $expected);
+    
+    if (phpversion() >= '5.3.0') {
+        include __DIR__.'/test_php53.php';
+    }
 
     Tester::report();
 ?>
