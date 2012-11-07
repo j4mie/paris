@@ -52,7 +52,7 @@ Paris requires [Idiorm](http://github.com/j4mie/idiorm/). Install Idiorm and Par
     require_once 'your/path/to/idiorm.php';
     require_once 'your/path/to/paris.php';
 
-Then, you need to tell Idiorm how to connect to your database. **For full details of how to do this, see [Idiorm's documentation](http://github.com/j4mie/idiorm/).**
+Then, you need to tell Idiorm how to connect to your database. **For full details of how to do this, see [Idiorm's documentation](https://github.com/j4mie/idiorm/#setup).**
 
 Briefly, you need to pass a *Data Source Name* connection string to the `configure` method of the ORM class.
 
