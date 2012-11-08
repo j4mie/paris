@@ -37,6 +37,11 @@ Changelog
 
 * Fix incorrect tests, see issue #12
 
+#### 1.2.0 - released 20XX-XX-XX
+
+* Add in basic namespace support, see issue #20
+* Allow properties to be set as an associative array in `set()`, see issue #13
+
 Philosophy
 ----------
 
