@@ -25,22 +25,24 @@ Features
 Changelog
 ---------
 
-#### 1.0.0 - released 2010-12-01
+#### 1.2.0 - released 20XX-XX-XX
 
-* Initial release
-
-#### 1.1.0 - released 2011-01-24
-
-* Add `is_dirty` method
+* Add in basic namespace support, see issue #20
+* Allow properties to be set as an associative array in `set()`, see issue #13
+* Setup composer for installation via packagist (j4mie/paris)
 
 #### 1.1.1 - released 2011-01-30
 
 * Fix incorrect tests, see issue #12
 
-#### 1.2.0 - released 20XX-XX-XX
+#### 1.1.0 - released 2011-01-24
 
-* Add in basic namespace support, see issue #20
-* Allow properties to be set as an associative array in `set()`, see issue #13
+* Add `is_dirty` method
+
+#### 1.0.0 - released 2010-12-01
+
+* Initial release
+
 
 Philosophy
 ----------
