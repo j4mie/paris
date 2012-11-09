@@ -30,6 +30,7 @@ Changelog
 * Add in basic namespace support, see issue #20
 * Allow properties to be set as an associative array in `set()`, see issue #13
 * Setup composer for installation via packagist (j4mie/paris)
+* Patch in idiorm now allows empty models to be saved (j4mie/idiorm see issue #58)
 
 #### 1.1.1 - released 2011-01-30
 
