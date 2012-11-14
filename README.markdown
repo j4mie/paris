@@ -25,11 +25,11 @@ Features
 Changelog
 ---------
 
-#### 1.2.0 - released 20XX-XX-XX
+#### 1.2.0 - released 2012-11-14
 
+* Setup composer for installation via packagist (j4mie/paris)
 * Add in basic namespace support, see issue #20
 * Allow properties to be set as an associative array in `set()`, see issue #13
-* Setup composer for installation via packagist (j4mie/paris)
 * Patch in idiorm now allows empty models to be saved (j4mie/idiorm see issue #58)
 
 #### 1.1.1 - released 2011-01-30
@@ -49,6 +49,19 @@ Philosophy
 ----------
 
 Paris is built with the same *less is more* philosophy as [Idiorm](http://github.com/j4mie/idiorm/).
+
+Installation
+------------
+
+### Packagist ###
+
+This library is available through Packagist with the vendor and package identifier of `j4mie/idiorm`
+
+Please see the [Packagist documentation](http://packagist.org/) for further information.
+
+### Download ###
+
+You can clone the git repository, download idiorm.php or a release tag and then drop the idiorm.php file in the vendors/3rd party/libs directory of your project.
 
 Let's See Some Code
 -------------------
