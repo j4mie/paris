@@ -199,5 +199,14 @@
         include __DIR__.'/test_php53.php';
     }
 
+    class ResultSetItem extends Model {
+    }
+
+    $items = Model::factory('ResultSetItem')->find_many()
+        ->set('field', 'value')
+        ->save();
+    $expected = "UPDATE `result_set_item` SET `field` = 'value' WHERE `id` = '1'";
+    Tester::check_equal("Calling model methods on ResultSet", $expected);
+
     Tester::report();
 ?>

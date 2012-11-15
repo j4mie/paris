@@ -117,11 +117,11 @@
 
         /**
          * Wrap Idiorm's find_many method to return
-         * an array of instances of the class associated
+         * a ResultSet of instances of the class associated
          * with this wrapper instead of the raw ORM class.
          */
         public function find_many() {
-            return array_map(array($this, '_create_model_instance'), parent::find_many());
+            return new ResultSet(array_map(array($this, '_create_model_instance'), parent::find_many()));
         }
 
         /**
@@ -131,6 +131,30 @@
          */
         public function create($data=null) {
             return $this->_create_model_instance(parent::create($data));
+        }
+    }
+
+    /**
+     * A simple class to work with collections of model instances
+     */
+    class ResultSet extends ArrayIterator {
+
+        /**
+         * Call a method on all children of a result set
+         * This allows fancy jQuery-like construct such as:
+         *
+         * Model::factory('Widget')->find_many()
+         *     ->set('field', 'value')
+         *     ->save();
+         * 
+         * Inspired by DumbledORM
+         * https://github.com/jasonmoo/DumbledORM/blob/master/dumbledorm.php
+         */
+        public function __call($method, $params = array()) {
+            foreach ($this as $object) {
+                call_user_func_array(array($object, $method), $params);
+            }
+            return $this;
         }
     }
 
