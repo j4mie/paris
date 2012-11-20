@@ -62,7 +62,7 @@
          * methods should return instances of.
          */
         public function set_class_name($class_name) {
-            $this->_class_name = $class_name;
+            $this->_class_name = (isset(self::$_config['class_prefix']) ? self::$_config['class_prefix'] : '') . $class_name;
         }
 
         /**
@@ -152,7 +152,7 @@
         const DEFAULT_FOREIGN_KEY_SUFFIX = '_id';
 
         /**
-         * The ORM instance used by this model 
+         * The ORM instance used by this model
          * instance to communicate with the database.
          */
         public $orm;
@@ -187,8 +187,8 @@
 
         /**
          * Convert a namespace to the standard PEAR underscore format.
-         * 
-         * Then convert a class name in CapWords to a table name in 
+         *
+         * Then convert a class name in CapWords to a table name in
          * lowercase_with_underscores.
          *
          * Finally strip doubled up underscores
