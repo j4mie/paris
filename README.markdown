@@ -85,6 +85,14 @@ You may also need to pass a username and password to your database driver, using
     ORM::configure('username', 'database_user');
     ORM::configure('password', 'top_secret');
 
+You can pass configuration specific to Paris by using the `configure` method of the ORMWrapper class.
+
+    ORMWrapper::configure('class_prefix', 'Model');
+
+Configuration options:
+
+* `class_prefix`: a prefix to your classes that will be prepended to Model class names
+
 ### Model Classes ###
 
 You should create a model class for each entity in your application. For example, if you are building an application that requires users, you should create a `User` class. Your model classes should extend the base `Model` class:
