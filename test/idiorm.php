@@ -1140,3 +1140,4 @@
         }
     }
 
+        protected $subject;
