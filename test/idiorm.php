@@ -134,6 +134,9 @@
         // lifetime of the object
         protected $_dirty_fields = array();
 
+        // Fields that are to be inserted in the DB raw
+        protected $_expr_fields = array();
+
         // Is this a new object (has create() been called)?
         protected $_is_new = false;
 
@@ -148,18 +151,29 @@
         /**
          * Pass configuration settings to the class in the form of
          * key/value pairs. As a shortcut, if the second argument
-         * is omitted, the setting is assumed to be the DSN string
-         * used by PDO to connect to the database. Often, this
-         * will be the only configuration required to use Idiorm.
+         * is omitted and the key is a string, the setting is
+         * assumed to be the DSN string used by PDO to connect
+         * to the database (often, this will be the only configuration
+         * required to use Idiorm). If you have more than one setting
+         * you wish to configure, another shortcut is to pass an array
+         * of settings (and omit the second argument).
          */
         public static function configure($key, $value=null) {
-            // Shortcut: If only one argument is passed, 
-            // assume it's a connection string
-            if (is_null($value)) {
-                $value = $key;
-                $key = 'connection_string';
+            if (is_array($key)) {
+                // Shortcut: If only one array argument is passed,
+                // assume it's an array of configuration settings
+                foreach ($key as $conf_key => $conf_value) {
+                    self::configure($conf_key, $conf_value);
+                }
+            } else {
+                if (is_null($value)) {
+                    // Shortcut: If only one string argument is passed, 
+                    // assume it's a connection string
+                    $value = $key;
+                    $key = 'connection_string';
+                }
+                self::$_config[$key] = $value;
             }
-            self::$_config[$key] = $value;
         }
 
         /**
@@ -260,8 +274,15 @@
                 // Escape the parameters
                 $parameters = array_map(array(self::$_db, 'quote'), $parameters);
 
+                // Avoid %format collision for vsprintf
+                $query = str_replace("%", "%%", $query);
+
                 // Replace placeholders in the query for vsprintf
-                $query = str_replace("?", "%s", $query);
+                if(false !== strpos($query, "'") || false !== strpos($query, '"')) {
+                    $query = IdiormString::str_replace_outside_quotes("?", "%s", $query);
+                } else {
+                    $query = str_replace("?", "%s", $query);
+                }
 
                 // Replace the question marks in the query with the parameters
                 $bound_query = vsprintf($query, $parameters);
@@ -380,14 +401,71 @@
         }
 
         /**
+         * Tell the ORM that you are expecting multiple results
+         * from your query, and execute it. Will return an array,
+         * or an empty array if no rows were returned.
+         * @return array
+         */
+        public function find_array() {
+            return $this->_run(); 
+        }
+
+        /**
          * Tell the ORM that you wish to execute a COUNT query.
          * Will return an integer representing the number of
          * rows returned.
          */
-        public function count() {
-            $this->select_expr('COUNT(*)', 'count');
+        public function count($column = '*') {
+            return $this->_call_aggregate_db_function(__FUNCTION__, $column);
+        }
+
+        /**
+         * Tell the ORM that you wish to execute a MAX query.
+         * Will return the max value of the choosen column.
+         */
+        public function max($column)  {
+            return $this->_call_aggregate_db_function(__FUNCTION__, $column);
+        }
+
+        /**
+         * Tell the ORM that you wish to execute a MIN query.
+         * Will return the min value of the choosen column.
+         */
+        public function min($column)  {
+            return $this->_call_aggregate_db_function(__FUNCTION__, $column);
+        }
+
+        /**
+         * Tell the ORM that you wish to execute a AVG query.
+         * Will return the average value of the choosen column.
+         */
+        public function avg($column)  {
+            return $this->_call_aggregate_db_function(__FUNCTION__, $column);
+        }
+
+        /**
+         * Tell the ORM that you wish to execute a SUM query.
+         * Will return the sum of the choosen column.
+         */
+        public function sum($column)  {
+            return $this->_call_aggregate_db_function(__FUNCTION__, $column);
+        }
+
+        /**
+         * Execute an aggregate query on the current connection.
+         * @param string $sql_function The aggregate function to call eg. MIN, COUNT, etc
+         * @param string $column The column to execute the aggregate query against
+         * @return int
+         */
+        protected function _call_aggregate_db_function($sql_function, $column) {
+            $alias = strtolower($sql_function);
+            $sql_function = strtoupper($sql_function);
+            if('*' != $column) {
+                $column = $this->_quote_identifier($column);
+            }
+            $this->select_expr("$sql_function($column)", $alias);
             $result = $this->find_one();
-            return ($result !== false && isset($result->count)) ? (int) $result->count : 0;
+            return ($result !== false && isset($result->$alias)) ? (int) $result->$alias : 0;
         }
 
          /**
@@ -411,13 +489,13 @@
         }
 
         /**
-         * Perform a raw query. The query should contain placeholders,
-         * in either named or question mark style, and the parameters
-         * should be an array of values which will be bound to the
-         * placeholders in the query. If this method is called, all
-         * other query building methods will be ignored.
+         * Perform a raw query. The query can contain placeholders in
+         * either named or question mark style. If placeholders are
+         * used, the parameters should be an array of values which will
+         * be bound to the placeholders in the query. If this method
+         * is called, all other query building methods will be ignored.
          */
-        public function raw_query($query, $parameters) {
+        public function raw_query($query, $parameters = array()) {
             $this->_is_raw_query = true;
             $this->_raw_query = $query;
             $this->_raw_parameters = $parameters;
@@ -468,6 +546,91 @@
          */
         public function select_expr($expr, $alias=null) {
             return $this->_add_result_column($expr, $alias);
+        }
+
+        /**
+         * Add columns to the list of columns returned by the SELECT
+         * query. This defaults to '*'. Many columns can be supplied
+         * as either an array or as a list of parameters to the method.
+         * 
+         * Note that the alias must not be numeric - if you want a
+         * numeric alias then prepend it with some alpha chars. eg. a1
+         * 
+         * @example select_many(array('alias' => 'column', 'column2', 'alias2' => 'column3'), 'column4', 'column5');
+         * @example select_many('column', 'column2', 'column3');
+         * @example select_many(array('column', 'column2', 'column3'), 'column4', 'column5');
+         * 
+         * @return \ORM
+         */
+        public function select_many() {
+            $columns = func_get_args();
+            if(!empty($columns)) {
+                $columns = $this->_normalise_select_many_columns($columns);
+                foreach($columns as $alias => $column) {
+                    if(is_numeric($alias)) {
+                        $alias = null;
+                    }
+                    $this->select($column, $alias);
+                }
+            }
+            return $this;
+        }
+
+        /**
+         * Add an unquoted expression to the list of columns returned
+         * by the SELECT query. Many columns can be supplied as either 
+         * an array or as a list of parameters to the method.
+         * 
+         * Note that the alias must not be numeric - if you want a
+         * numeric alias then prepend it with some alpha chars. eg. a1
+         * 
+         * @example select_many_expr(array('alias' => 'column', 'column2', 'alias2' => 'column3'), 'column4', 'column5')
+         * @example select_many_expr('column', 'column2', 'column3')
+         * @example select_many_expr(array('column', 'column2', 'column3'), 'column4', 'column5')
+         * 
+         * @return \ORM
+         */
+        public function select_many_expr() {
+            $columns = func_get_args();
+            if(!empty($columns)) {
+                $columns = $this->_normalise_select_many_columns($columns);
+                foreach($columns as $alias => $column) {
+                    if(is_numeric($alias)) {
+                        $alias = null;
+                    }
+                    $this->select_expr($column, $alias);
+                }
+            }
+            return $this;
+        }
+
+        /**
+         * Take a column specification for the select many methods and convert it
+         * into a normalised array of columns and aliases.
+         * 
+         * It is designed to turn the following styles into a normalised array:
+         * 
+         * array(array('alias' => 'column', 'column2', 'alias2' => 'column3'), 'column4', 'column5'))
+         * 
+         * @param array $columns
+         * @return array
+         */
+        protected function _normalise_select_many_columns($columns) {
+            $return = array();
+            foreach($columns as $column) {
+                if(is_array($column)) {
+                    foreach($column as $key => $value) {
+                        if(!is_numeric($key)) {
+                            $return[$key] = $value;
+                        } else {
+                            $return[] = $value;
+                        }
+                    }
+                } else {
+                    $return[] = $column;
+                }
+            }
+            return $return;
         }
 
         /**
@@ -580,6 +743,10 @@
          * of the call to _quote_identifier
          */
         protected function _add_simple_where($column_name, $separator, $value) {
+            // Add the table name in case of ambiguous columns
+            if (count($this->_join_sources) > 0 && strpos($column_name, '.') === false) {
+                $column_name = "{$this->_table_name}.{$column_name}";
+            }
             $column_name = $this->_quote_identifier($column_name);
             return $this->_add_where("{$column_name} {$separator} ?", $value);
         }
@@ -588,8 +755,19 @@
          * Return a string containing the given number of question marks,
          * separated by commas. Eg "?, ?, ?"
          */
-        protected function _create_placeholders($number_of_placeholders) {
-            return join(", ", array_fill(0, $number_of_placeholders, "?"));
+        protected function _create_placeholders($fields) {
+            if(!empty($fields)) {
+                $db_fields = array();
+                foreach($fields as $key => $value) {
+                    // Process expression fields directly into the query
+                    if(array_key_exists($key, $this->_expr_fields)) {
+                        $db_fields[] = $value;
+                    } else {
+                        $db_fields[] = '?';
+                    }
+                }
+                return implode(', ', $db_fields);
+            }
         }
 
         /**
@@ -671,7 +849,7 @@
          */
         public function where_in($column_name, $values) {
             $column_name = $this->_quote_identifier($column_name);
-            $placeholders = $this->_create_placeholders(count($values));
+            $placeholders = $this->_create_placeholders($values);
             return $this->_add_where("{$column_name} IN ({$placeholders})", $values);
         }
 
@@ -680,7 +858,7 @@
          */
         public function where_not_in($column_name, $values) {
             $column_name = $this->_quote_identifier($column_name);
-            $placeholders = $this->_create_placeholders(count($values));
+            $placeholders = $this->_create_placeholders($values);
             return $this->_add_where("{$column_name} NOT IN ({$placeholders})", $values);
         }
 
@@ -749,11 +927,27 @@
         }
 
         /**
+         * Add an unquoted expression as an ORDER BY clause
+         */
+        public function order_by_expr($clause) {
+            $this->_order_by[] = $clause;
+            return $this;
+        }
+
+        /**
          * Add a column to the list of columns to GROUP BY
          */
         public function group_by($column_name) {
             $column_name = $this->_quote_identifier($column_name);
             $this->_group_by[] = $column_name;
+            return $this;
+        }
+
+        /**
+         * Add an unquoted expression to the list of columns to GROUP BY 
+         */
+        public function group_by_expr($expr) {
+            $this->_group_by[] = $expr;
             return $this;
         }
 
@@ -1023,12 +1217,38 @@
 
         /**
          * Set a property to a particular value on this object.
-         * Flags that property as 'dirty' so it will be saved to the
+         * To set multiple properties at once, pass an associative array
+         * as the first parameter and leave out the second parameter.
+         * Flags the properties as 'dirty' so they will be saved to the
          * database when save() is called.
          */
-        public function set($key, $value) {
-            $this->_data[$key] = $value;
-            $this->_dirty_fields[$key] = $value;
+        public function set($key, $value = null) {
+            $this->_set_orm_property($key, $value);
+        }
+
+        public function set_expr($key, $value = null) {
+            $this->_set_orm_property($key, $value, true);
+        }
+
+        /**
+         * Set a property on the ORM object.
+         * @param string|array $key
+         * @param string|null $value
+         * @param bool $raw Whether this value should be treated as raw or not
+         */
+        protected function _set_orm_property($key, $value = null, $expr = false) {
+            if (!is_array($key)) {
+                $key = array($key => $value);
+            }
+            foreach ($key as $field => $value) {
+                $this->_data[$field] = $value;
+                $this->_dirty_fields[$field] = $value;
+                if (false === $expr and isset($this->_expr_fields[$field])) {
+                    unset($this->_expr_fields[$field]);
+                } else if (true === $expr) {
+                    $this->_expr_fields[$field] = true;
+                }
+            }
         }
 
         /**
@@ -1045,7 +1265,9 @@
          */
         public function save() {
             $query = array();
-            $values = array_values($this->_dirty_fields);
+
+            // remove any expression fields as they are already baked into the query
+            $values = array_values(array_diff_key($this->_dirty_fields, $this->_expr_fields));
 
             if (!$this->_is_new) { // UPDATE
                 // If there are no dirty values, do nothing
@@ -1083,7 +1305,10 @@
 
             $field_list = array();
             foreach ($this->_dirty_fields as $key => $value) {
-                $field_list[] = "{$this->_quote_identifier($key)} = ?";
+                if(!array_key_exists($key, $this->_expr_fields)) {
+                    $value = '?';
+                }
+                $field_list[] = "{$this->_quote_identifier($key)} = $value";
             }
             $query[] = join(", ", $field_list);
             $query[] = "WHERE";
@@ -1102,7 +1327,7 @@
             $query[] = "(" . join(", ", $field_list) . ")";
             $query[] = "VALUES";
 
-            $placeholders = $this->_create_placeholders(count($this->_dirty_fields));
+            $placeholders = $this->_create_placeholders($this->_dirty_fields);
             $query[] = "({$placeholders})";
             return join(" ", $query);
         }
@@ -1124,6 +1349,21 @@
             return $statement->execute($params);
         }
 
+        /**
+         * Delete many records from the database
+         */
+        public function delete_many() {
+            // Build and return the full DELETE statement by concatenating
+            // the results of calling each separate builder method.
+            $query = $this->_join_if_not_empty(" ", array(
+                "DELETE FROM",
+                $this->_quote_identifier($this->_table_name),
+                $this->_build_where(),
+            ));
+            $statement = self::$_db->prepare($query);
+            return $statement->execute($this->_values);
+        }
+
         // --------------------- //
         // --- MAGIC METHODS --- //
         // --------------------- //
@@ -1135,8 +1375,122 @@
             $this->set($key, $value);
         }
 
+        public function __unset($key) {
+            unset($this->_data[$key]);
+            unset($this->_dirty_fields[$key]);
+        }
+
+
         public function __isset($key) {
             return isset($this->_data[$key]);
         }
     }
 
+    /**
+     * A class to handle str_replace operations that involve quoted strings
+     * @example IdiormString::str_replace_outside_quotes('?', '%s', 'columnA = "Hello?" AND columnB = ?');
+     * @example IdiormString::value('columnA = "Hello?" AND columnB = ?')->replace_outside_quotes('?', '%s');
+     * @author Jeff Roberson <ridgerunner@fluxbb.org>
+     * @author Simon Holywell <treffynnon@php.net>
+     * @link http://stackoverflow.com/a/13370709/461813 StackOverflow answer
+     */
+    class IdiormString {
+        protected $subject;
+        protected $search;
+        protected $replace;
+
+        /**
+         * Get an easy to use instance of the class
+         * @param string $subject
+         * @return \self
+         */
+        public static function value($subject) {
+            return new self($subject);
+        }
+
+        /**
+         * Shortcut method: Replace all occurrences of the search string with the replacement
+         * string where they appear outside quotes.
+         * @param string $search
+         * @param string $replace
+         * @param string $subject
+         * @return string
+         */
+        public static function str_replace_outside_quotes($search, $replace, $subject) {
+            return static::value($subject)->replace_outside_quotes($search, $replace);
+        }
+
+        /**
+         * Set the base string object
+         * @param string $subject
+         */
+        public function __construct($subject) {
+            $this->subject = (string) $subject;
+        }
+
+        /**
+         * Replace all occurrences of the search string with the replacement
+         * string where they appear outside quotes
+         * @param string $search
+         * @param string $replace
+         * @return string
+         */
+        public function replace_outside_quotes($search, $replace) {
+            $this->search = $search;
+            $this->replace = $replace;
+            return $this->_str_replace_outside_quotes();
+        }
+
+        /**
+         * Validate an input string and perform a replace on all ocurrences
+         * of $this->search with $this->replace
+         * @author Jeff Roberson <ridgerunner@fluxbb.org>
+         * @link http://stackoverflow.com/a/13370709/461813 StackOverflow answer
+         * @return string
+         */
+        protected function _str_replace_outside_quotes(){
+            $re_valid = '/
+                # Validate string having embedded quoted substrings.
+                ^                           # Anchor to start of string.
+                (?:                         # Zero or more string chunks.
+                  "[^"\\\\]*(?:\\\\.[^"\\\\]*)*"  # Either a double quoted chunk,
+                | \'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'  # or a single quoted chunk,
+                | [^\'"\\\\]+               # or an unquoted chunk (no escapes).
+                )*                          # Zero or more string chunks.
+                \z                          # Anchor to end of string.
+                /sx';
+            if (!preg_match($re_valid, $this->subject)) {
+                throw new IdiormStringException("Subject string is not valid in the replace_outside_quotes context.");
+            }
+            $re_parse = '/
+                # Match one chunk of a valid string having embedded quoted substrings.
+                  (                         # Either $1: Quoted chunk.
+                    "[^"\\\\]*(?:\\\\.[^"\\\\]*)*"  # Either a double quoted chunk,
+                  | \'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'  # or a single quoted chunk.
+                  )                         # End $1: Quoted chunk.
+                | ([^\'"\\\\]+)             # or $2: an unquoted chunk (no escapes).
+                /sx';
+            return preg_replace_callback($re_parse, array($this, '_str_replace_outside_quotes_cb'), $this->subject);
+        }
+
+        /**
+         * Process each matching chunk from preg_replace_callback replacing
+         * each occurrence of $this->search with $this->replace
+         * @author Jeff Roberson <ridgerunner@fluxbb.org>
+         * @link http://stackoverflow.com/a/13370709/461813 StackOverflow answer
+         * @param array $matches
+         * @return string
+         */
+        protected function _str_replace_outside_quotes_cb($matches) {
+            // Return quoted string chunks (in group $1) unaltered.
+            if ($matches[1]) return $matches[1];
+            // Process only unquoted chunks (in group $2).
+            return preg_replace('/'. preg_quote($this->search, '/') .'/',
+                $this->replace, $matches[2]);
+        }
+    }
+
+    /**
+     * A placeholder for exceptions eminating from the IdiormString class
+     */
+    class IdiormStringException extends Exception {}
