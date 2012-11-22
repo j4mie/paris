@@ -23,7 +23,10 @@
         $db = new DummyPDO('sqlite::memory:');
         ORM::set_db($db);
 
+        // Allow these tests to be run independently or as part of the full suite
+        if (!class_exists('Simple')) {
         class Simple extends Model {
+        }
         }
 
         class PrefixSimple extends Model {
