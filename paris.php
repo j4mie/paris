@@ -51,6 +51,20 @@
      */
     class ORMWrapper extends ORM {
 
+        // ------------------------ //
+        // --- CLASS PROPERTIES --- //
+        // ------------------------ //
+
+        // Class configuration
+        public static $_config = array(
+            'class_prefix' => '',
+            'namespace' => ''
+        );
+
+        // --------------------------- //
+        // --- INSTANCE PROPERTIES --- //
+        // --------------------------- //
+
         /**
          * The wrapped find_one and find_many classes will
          * return an instance or instances of this class.
@@ -62,7 +76,7 @@
          * methods should return instances of.
          */
         public function set_class_name($class_name) {
-            $this->_class_name = (isset(self::$_config['class_prefix']) ? self::$_config['class_prefix'] : '') . $class_name;
+            $this->_class_name = $class_name;
         }
 
         /**
@@ -205,6 +219,27 @@
         }
 
         /**
+         * Internal method to normalise the class name with any prefixes or
+         * namespaces configured on the ORMWrapper
+         */
+        protected static function _normalise_class_name($class_name) {
+            $config_prefix = ORMWrapper::$_config['class_prefix'];
+            $config_namespace = trim(ORMWrapper::$_config['namespace'], '\\');
+            $class_name = trim($class_name, '\\');
+            $class_path = explode('\\', $class_name);
+            $class_name = array_pop($class_path);
+            $class_prefix = preg_replace('/^([a-zA-Z_\x7f-\xff][a-z0-9_\x7f-\xff]+).*/','$1', $class_name);
+            $class_namespace = implode('\\', $class_path);
+            if ($config_prefix && $config_prefix !== $class_prefix) {
+                $class_name = $config_prefix . $class_name;
+            }
+            if ($config_namespace || $class_namespace) {
+                $class_name = ($class_namespace ? $class_namespace : $config_namespace) . '\\' . $class_name;
+            }
+            return $class_name;
+        }
+
+        /**
          * Return the ID column name to use for this class. If it is
          * not set on the class, returns null.
          */
@@ -235,6 +270,7 @@
          * its find_one or find_many methods are called.
          */
         public static function factory($class_name) {
+            $class_name = self::_normalise_class_name($class_name);
             $table_name = self::_get_table_name($class_name);
             $wrapper = ORMWrapper::for_table($table_name);
             $wrapper->set_class_name($class_name);
