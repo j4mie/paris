@@ -69,8 +69,33 @@
 
     namespace {
 
+        /*
+         *  Testing prefixing
+         */
+        // Do not prefix tables
+        ORMWrapper::configure('prefix_tables', false);
         // Configured prefix
-        ORMWrapper::configure('class_prefix', 'Prefix');
+        ORMWrapper::configure('prefix', 'Prefix');
+        Model::factory('Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Prefixed auto table name", $expected);
+
+        // Configured prefix is the class prefix so is ignored
+        Model::factory('PrefixSimple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Configured prefix ignored when already present", $expected);
+
+        // Configured prefix is a substring of class prefix so is not ignored
+        ORMWrapper::configure('prefix', 'Pre');
+        Model::factory('PrefixSimple')->find_many();
+        $expected = 'SELECT * FROM `prefix_simple`';
+        Tester::check_equal("Configured prefix used when not exactly the class prefix", $expected);
+
+        // Prefix tables
+        ORMWrapper::configure('prefix_tables', true);
+
+        // Configured prefix
+        ORMWrapper::configure('prefix', 'Prefix');
         Model::factory('Simple')->find_many();
         $expected = 'SELECT * FROM `prefix_simple`';
         Tester::check_equal("Prefixed auto table name", $expected);
@@ -81,13 +106,60 @@
         Tester::check_equal("Configured prefix ignored when already present", $expected);
 
         // Configured prefix is a substring of class prefix so is not ignored
-        ORMWrapper::configure('class_prefix', 'Pre');
+        ORMWrapper::configure('prefix', 'Pre');
         Model::factory('PrefixSimple')->find_many();
         $expected = 'SELECT * FROM `pre_prefix_simple`';
         Tester::check_equal("Configured prefix used when not exactly the class prefix", $expected);
 
+        // Set table prefixing back to normal
+        ORMWrapper::configure('prefix_tables', false);
+
+        /*
+         *  Testing namepacing
+         */
+        // Do not namepace tables
+
         // Simple namespace
-        ORMWrapper::configure('class_prefix', '');
+        ORMWrapper::configure('prefix', '');
+        Model::factory('Tests\\Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Namespaced auto table name", $expected);
+
+        // Normalised simple namespace
+        Model::factory('\\Tests\\Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Normalised namespaced auto table name", $expected);
+
+        // Configured namespace
+        ORMWrapper::configure('namespace', 'Tests');
+        Model::factory('Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Configured namespaced auto table name", $expected);
+
+        // Normalised configured namespace
+        ORMWrapper::configure('namespace', '\\Tests\\');
+        Model::factory('Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Normalised configured namespaced auto table name", $expected);
+
+        // Supplied namespace overrides configured namespace
+        ORMWrapper::configure('namespace', 'Tests');
+        Model::factory('Tests2\\Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Supplied namespace overrides configured namespace", $expected);
+
+        // Configured prefix and supplied namespace
+        ORMWrapper::configure('prefix', 'Prefix');
+        ORMWrapper::configure('namespace', '');
+        Model::factory('Tests\\Simple')->find_many();
+        $expected = 'SELECT * FROM `simple`';
+        Tester::check_equal("Configured prefix prepended to class base name", $expected);
+
+        // Namespace tables
+        ORMWrapper::configure('namespace_tables', true);
+
+        // Simple namespace
+        ORMWrapper::configure('prefix', '');
         Model::factory('Tests\\Simple')->find_many();
         $expected = 'SELECT * FROM `tests_simple`';
         Tester::check_equal("Namespaced auto table name", $expected);
@@ -116,10 +188,12 @@
         Tester::check_equal("Supplied namespace overrides configured namespace", $expected);
 
         // Configured prefix and supplied namespace
-        ORMWrapper::configure('class_prefix', 'Prefix');
+        ORMWrapper::configure('prefix', 'Prefix');
         ORMWrapper::configure('namespace', '');
         Model::factory('Tests\\Simple')->find_many();
-        $expected = 'SELECT * FROM `tests_prefix_simple`';
+        $expected = 'SELECT * FROM `tests_simple`';
         Tester::check_equal("Configured prefix prepended to class base name", $expected);
 
+        // Set table namespacing back to normal
+        ORMWrapper::configure('namespace_tables', true);
     }

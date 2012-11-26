@@ -87,11 +87,17 @@ You may also need to pass a username and password to your database driver, using
 
 You can pass configuration specific to Paris by using the `configure` method of the ORMWrapper class.
 
-    ORMWrapper::configure('class_prefix', 'Model');
+    ORMWrapper::configure('prefix', 'Prefix');
+    ORMWrapper::configure('namespace', 'Namespace\To');
+    ORMWrapper::configure('prefix_tables', true);
+    ORMWrapper::configure('namespace_tables', true);
 
 Configuration options:
 
-* `class_prefix`: a prefix to your classes that will be prepended to Model class names
+* `prefix`: a prefix to your classes that will be prepended to Model class names. Defaults to empty.
+* `namespace`: a namespace to your classes that will be prepended to Model class names. Defaults to empty.
+* `prefix_tables`: Whether the prefix will be added to the table name (e.g. PrefixModel -> prefix_model) or not. Defaults to `false`.
+* `namespace_tables`: Whether the namespace will be added to the table name (e.g. Namespace\To\Model -> namespace_to_model) or not. Defaults to `false`.
 
 ### Model Classes ###
 

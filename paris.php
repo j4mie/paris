@@ -57,8 +57,10 @@
 
         // Class configuration
         public static $_config = array(
-            'class_prefix' => '',
-            'namespace' => ''
+            'prefix' => '',
+            'namespace' => '',
+            'namespace_tables' => false,
+            'prefix_tables' => false,
         );
 
         // --------------------------- //
@@ -211,6 +213,13 @@
          * Project\Models\CarTyre would be project_models_car_tyre.
          */
         protected static function _class_name_to_table_name($class_name) {
+            if (!ORMWrapper::$_config['namespace_tables']) {
+                $parts = explode('\\', $class_name);
+                $class_name = $parts[count($parts) - 1];
+            }
+            if (!ORMWrapper::$_config['prefix_tables']) {
+                $class_name = preg_replace('/(?<=^|\\\\)' . preg_quote(ORMWrapper::$_config['prefix']) . '(?=[^\\\\]+$)/', '', $class_name, 1);
+            }
             return strtolower(preg_replace(
                 array('/\\\\/', '/(?<=[a-z])([A-Z])/', '/__/'),
                 array('_', '_$1', '_'),
@@ -223,7 +232,7 @@
          * namespaces configured on the ORMWrapper
          */
         protected static function _normalise_class_name($class_name) {
-            $config_prefix = ORMWrapper::$_config['class_prefix'];
+            $config_prefix = ORMWrapper::$_config['prefix'];
             $config_namespace = trim(ORMWrapper::$_config['namespace'], '\\');
             $class_name = trim($class_name, '\\');
             $class_path = explode('\\', $class_name);
