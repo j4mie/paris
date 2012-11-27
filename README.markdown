@@ -25,6 +25,11 @@ Features
 Changelog
 ---------
 
+#### 1.3.0 - released XXXX-XX-XX
+
+* Exclude tests and git files from git exports (used by composer)
+* Update included Idiorm version for tests
+
 #### 1.2.0 - released 2012-11-14
 
 * Setup composer for installation via packagist (j4mie/paris)
