@@ -377,6 +377,14 @@
         }
 
         /**
+         * Check whether the model was the result of a call to create() or not
+         * @return bool
+         */
+        public function is_new() {
+            return $this->orm->is_new();
+        }
+
+        /**
          * Wrapper for Idiorm's as_array method.
          */
         public function as_array() {

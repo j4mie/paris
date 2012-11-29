@@ -30,6 +30,7 @@ Changelog
 * Exclude tests and git files from git exports (used by composer)
 * Update included Idiorm version for tests
 * Implement `set_expr` - closes issue #39
+* Add `is_new` - closes issue #40
 
 #### 1.2.0 - released 2012-11-14
 
@@ -355,6 +356,8 @@ To create a new (empty) instance, use the `create` method:
 To check whether a property has been changed since the object was created (or last saved), call the `is_dirty` method:
 
     $name_has_changed = $person->is_dirty('name'); // Returns true or false
+
+To determine if the instance you are operating on has been obtained by calling `create()` or whether it was via a query on the database you can call `is_new()` on it to get a boolean response.
 
 You can also use database expressions when setting values on your model:
 
