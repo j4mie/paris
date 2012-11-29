@@ -93,6 +93,14 @@
     $expected = "DELETE FROM `widget` WHERE `id` = '1'";
     Tester::check_equal("Delete data", $expected);
 
+    $widget = Model::factory('Widget')->create();
+    $widget->name = "Fred";
+    $widget->age = 10;
+    $widget->set_expr('added', 'NOW()');
+    $widget->save();
+    $expected = "INSERT INTO `widget` (`name`, `age`, `added`) VALUES ('Fred', '10', NOW())";
+    Tester::check_equal("Insert data containing an expression", $expected);
+
     class Profile extends Model {
         public function user() {
             return $this->belongs_to('User');
