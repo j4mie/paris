@@ -10,6 +10,16 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   
+   philosophy
+   installation
+   configuration
+   models
+   associations
+   querying
+   filters
+   transactions
+   validation
 
 
 
