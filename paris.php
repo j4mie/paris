@@ -353,9 +353,20 @@
 
         /**
          * Setter method, allows $model->set('property', 'value') access to data.
+         * @param string|array $key
+         * @param string|null $value
          */
         public function set($property, $value = null) {
             $this->orm->set($property, $value);
+        }
+
+        /**
+         * Setter method, allows $model->set_expr('property', 'value') access to data.
+         * @param string|array $key
+         * @param string|null $value
+         */
+        public function set_expr($property, $value = null) {
+            $this->orm->set_expr($property, $value);
         }
 
         /**
@@ -363,6 +374,14 @@
          */
         public function is_dirty($property) {
             return $this->orm->is_dirty($property);
+        }
+
+        /**
+         * Check whether the model was the result of a call to create() or not
+         * @return bool
+         */
+        public function is_new() {
+            return $this->orm->is_new();
         }
 
         /**

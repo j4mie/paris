@@ -25,6 +25,13 @@ Features
 Changelog
 ---------
 
+#### 1.3.0 - released XXXX-XX-XX
+
+* Exclude tests and git files from git exports (used by composer)
+* Update included Idiorm version for tests
+* Implement `set_expr` - closes issue #39
+* Add `is_new` - closes issue #40
+
 #### 1.2.0 - released 2012-11-14
 
 * Setup composer for installation via packagist (j4mie/paris)
@@ -349,6 +356,15 @@ To create a new (empty) instance, use the `create` method:
 To check whether a property has been changed since the object was created (or last saved), call the `is_dirty` method:
 
     $name_has_changed = $person->is_dirty('name'); // Returns true or false
+
+To determine if the instance you are operating on has been obtained by calling `create()` or whether it was via a query on the database you can call `is_new()` on it to get a boolean response.
+
+You can also use database expressions when setting values on your model:
+
+    $user = Model::factory('User')->find_one($id);
+    $user->name = 'Paris';
+    $user->set_expr('last_logged_in', 'NOW()');
+    $user->save();
 
 Of course, because these objects are instances of your base model classes, you can also call methods that you have defined on them:
 
