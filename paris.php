@@ -86,10 +86,13 @@
         /**
          * Factory method, return an instance of this
          * class bound to the supplied table name.
+         *
+         * A repeat of content in parent::for_table, so that
+         * created class is ORMWrapper, not ORM
          */
-        public static function for_table($table_name) {
-            self::_setup_db();
-            return new self($table_name);
+        public static function for_table($table_name, $which = parent::DEFAULT_CONNECTION) {
+            self::_setup_db($which);
+            return new self($table_name, array(), $which);
         }
 
         /**
@@ -234,9 +237,17 @@
          * responsible for returning instances of the correct class when
          * its find_one or find_many methods are called.
          */
-        public static function factory($class_name) {
+        public static function factory($class_name, $which = null) {
             $table_name = self::_get_table_name($class_name);
-            $wrapper = ORMWrapper::for_table($table_name);
+
+            if ($which == null) {
+               $which = self::_get_static_property(
+                   $class_name,
+                   '_connection_key',
+                   ORMWrapper::DEFAULT_CONNECTION
+               );
+            }
+            $wrapper = ORMWrapper::for_table($table_name, $which);
             $wrapper->set_class_name($class_name);
             $wrapper->use_id_column(self::_get_id_column_name($class_name));
             return $wrapper;

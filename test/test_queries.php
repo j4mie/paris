@@ -202,7 +202,53 @@
     $authors2 = $book2->authors()->find_many();
     $expected = "SELECT `author_two`.* FROM `author_two` JOIN `wrote_the_book` ON `author_two`.`id` = `wrote_the_book`.`custom_author_id` WHERE `wrote_the_book`.`custom_book_id` = '1'";
     Tester::check_equal("has_many_through relation with custom intermediate model and key names", $expected);
-    
+
+    // Tests of muliple connections
+    define('ALTERNATE', 'alternate');
+    ORM::set_db(new DummyDifferentPDO('sqlite::memory:'), ALTERNATE);
+    ORM::configure('logging', true, ALTERNATE);
+
+    $person1 = Model::factory('author')->find_one(1);
+    $person2 = Model::factory('author', ALTERNATE)->find_one(1);
+    //$expected = "SELECT * FROM `author` WHERE `id` = '1' LIMIT 1";
+
+    Tester::check_equal_string("Multiple connection (1)", $person1->name, 'Fred');
+    Tester::check_equal_string("Multiple connection (2)", $person2->name, 'Steve');
+
+    class AuthorThree extends Model {
+        public static $_connection_key = ALTERNATE;
+    }
+
+    $person3 = Model::factory('AuthorThree')->find_one(1);
+    Tester::check_equal_string("Multiple connection (static connection key)", $person3->name, 'Steve');
+
+    // The following test requires PHP 5.3+ (to change accessibilty from protected
+    // through reflection), but the feature itself does not.
+    // Once the ORM::get_last_statement() branch is added (see #84 and #87), the test
+    // could be reworked to check for class name of the PDOStatement mock instances instead.
+    if (phpversion() >= '5.3.0') {
+
+        $person4 = Model::factory('Author')->create();
+
+        $reflectedClass = new ReflectionClass($person4->orm);
+        $property = $reflectedClass->getProperty('_which_db');
+        $property->setAccessible(true);
+
+        // TODO: Get $person4->orm->_which = ORM::DEFAULT_CONNECTION
+        Tester::check_equal_string("Multiple connection switch db after instantiation (before)",
+            $property->getValue($person4->orm),
+            ORM::DEFAULT_CONNECTION
+        );
+
+        $person4->orm = Model::factory('Author', ALTERNATE);
+
+        Tester::check_equal_string("Multiple connection switch db after instantiation (after)",
+            $property->getValue($person4->orm),
+            ALTERNATE
+        );
+    }
+
+
     if (phpversion() >= '5.3.0') {
         include __DIR__.'/test_php53.php';
     }
