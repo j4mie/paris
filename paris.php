@@ -121,7 +121,11 @@
          * with this wrapper instead of the raw ORM class.
          */
         public function find_many() {
-            return array_map(array($this, '_create_model_instance'), parent::find_many());
+            $results = parent::find_many();
+            foreach($results as $key => $result) {
+                $results[$key] = $this->_create_model_instance($result);
+            }
+            return $results;
         }
 
         /**

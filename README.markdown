@@ -21,6 +21,7 @@ Features
 * Built on top of [PDO](http://php.net/pdo).
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
 * Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
+* Supports collections of models with method chaining to filter or apply actions to multiple results at once.
 
 Documentation
 -------------
@@ -44,6 +45,7 @@ Changelog
 * Update included Idiorm version for tests
 * Implement `set_expr` - closes issue #39
 * Add `is_new` - closes issue #40
+* Add support for the new IdiormResultSet object
 
 #### 1.2.0 - released 2012-11-14
 
