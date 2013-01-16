@@ -5,7 +5,7 @@
      * Mock version of the PDOStatement class.
      *
      */
-    class DummyPDOStatement extends PDOStatement {
+    class MockPDOStatement extends PDOStatement {
 
         private $current_row = 0;
         /**
@@ -27,13 +27,13 @@
      * of the PDO API.
      *
      */
-    class DummyPDO extends PDO {
+    class MockPDO extends PDO {
 
         /**
          * Return a dummy PDO statement
          */
         public function prepare($statement, $driver_options=array()) {
-            $this->last_query = new DummyPDOStatement($statement);
+            $this->last_query = new MockPDOStatement($statement);
             return $this->last_query;
         }
     }

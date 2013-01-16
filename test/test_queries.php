@@ -17,7 +17,7 @@
     ORM::configure('logging', true);
 
     // Set up the dummy database connection
-    $db = new DummyPDO('sqlite::memory:');
+    $db = new MockPDO('sqlite::memory:');
     ORM::set_db($db);
 
     class Simple extends Model {
