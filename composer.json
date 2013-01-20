@@ -38,6 +38,6 @@
         "j4mie/idiorm": "1.2.*"
     },
     "autoload": {
-        "files": ["paris.php"]
+        "classmap": ["paris.php"]
     }
 }
