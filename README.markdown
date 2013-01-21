@@ -55,7 +55,7 @@ Installation
 
 ### Packagist ###
 
-This library is available through Packagist with the vendor and package identifier of `j4mie/idiorm`
+This library is available through Packagist with the vendor and package identifier of `j4mie/paris`
 
 Please see the [Packagist documentation](http://packagist.org/) for further information.
 
