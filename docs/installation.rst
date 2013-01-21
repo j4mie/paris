@@ -5,7 +5,7 @@ Packagist
 ~~~~~~~~~
 
 This library is available through Packagist with the vendor and package
-identifier of ``j4mie/idiorm``
+identifier of ``j4mie/paris``
 
 Please see the `Packagist documentation`_ for further information.
 
