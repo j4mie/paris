@@ -46,6 +46,8 @@ Changelog
 * Implement `set_expr` - closes issue #39
 * Add `is_new` - closes issue #40
 * Add support for the new IdiormResultSet object
+* Change Composer to use a classmap so that autoloading is better supported [[javierd](https://github.com/javiervd)] - issue #44
+* Move tests into PHPUnit to match Idiorm
 
 #### 1.2.0 - released 2012-11-14
 
