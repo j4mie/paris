@@ -124,7 +124,11 @@
          * with this wrapper instead of the raw ORM class.
          */
         public function find_many() {
-            return array_map(array($this, '_create_model_instance'), parent::find_many());
+            $results = parent::find_many();
+            foreach($results as $key => $result) {
+                $results[$key] = $this->_create_model_instance($result);
+            }
+            return $results;
         }
 
         /**
@@ -237,17 +241,18 @@
          * responsible for returning instances of the correct class when
          * its find_one or find_many methods are called.
          */
-        public static function factory($class_name, $which = null) {
+         public static function factory($class_name, $connection_name = null) {
+
             $table_name = self::_get_table_name($class_name);
 
-            if ($which == null) {
-               $which = self::_get_static_property(
+            if ($connection_name == null) {
+               $connection_name = self::_get_static_property(
                    $class_name,
                    '_connection_key',
                    ORMWrapper::DEFAULT_CONNECTION
                );
             }
-            $wrapper = ORMWrapper::for_table($table_name, $which);
+            $wrapper = ORMWrapper::for_table($table_name, $connection_name);
             $wrapper->set_class_name($class_name);
             $wrapper->use_id_column(self::_get_id_column_name($class_name));
             return $wrapper;
