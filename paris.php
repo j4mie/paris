@@ -49,7 +49,7 @@
      * directly. It is used internally by the Model base
      * class.
      */
-    class ORMWrapper extends ORM {
+    class ORMWrapper extends ORM implements JsonSerializable{
 
         /**
          * The wrapped find_one and find_many classes will
@@ -402,5 +402,10 @@
          */
         public function hydrate($data) {
             $this->orm->hydrate($data)->force_all_dirty();
+        }
+
+        //Serializes object to JSON
+        public function jsonSerialize(){
+            return $this->_data;
         }
     }
