@@ -90,9 +90,9 @@
          * A repeat of content in parent::for_table, so that
          * created class is ORMWrapper, not ORM
          */
-        public static function for_table($table_name, $which = parent::DEFAULT_CONNECTION) {
-            self::_setup_db($which);
-            return new self($table_name, array(), $which);
+        public static function for_table($table_name, $connection_name = parent::DEFAULT_CONNECTION) {
+            self::_setup_db($connection_name);
+            return new self($table_name, array(), $connection_name);
         }
 
         /**
@@ -241,14 +241,14 @@
          * responsible for returning instances of the correct class when
          * its find_one or find_many methods are called.
          */
-         public static function factory($class_name, $connection_name = null) {
+        public static function factory($class_name, $connection_name = null) {
 
             $table_name = self::_get_table_name($class_name);
 
             if ($connection_name == null) {
                $connection_name = self::_get_static_property(
                    $class_name,
-                   '_connection_key',
+                   '_connection_name',
                    ORMWrapper::DEFAULT_CONNECTION
                );
             }

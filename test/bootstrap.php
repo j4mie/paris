@@ -44,27 +44,13 @@ class MockPDO extends PDO {
 /**
  * Another mock PDOStatement class, used for testing multiple connections
  */
-class MockDifferentPDOStatement extends PDOStatement {
-
-    private $current_row = 0;
-    /**
-     * Return some dummy data
-     */
-     public function fetch($fetch_style=PDO::FETCH_BOTH, $cursor_orientation=PDO::FETCH_ORI_NEXT, $cursor_offset=0) {
-        if ($this->current_row == 5) {
-            return false;
-        } else {
-            $this->current_row++;
-            return array('name' => 'Steve', 'age' => 80, 'id' => "{$this->current_row}");
-        }
-    }
-}
+class MockDifferentPDOStatement extends MockPDOStatement {}
 
 /**
  * A different mock database class, for testing multiple connections
  * Mock database class implementing a subset of the PDO API.
  */
-class MockDifferentPDO extends PDO {
+class MockDifferentPDO extends MockPDO {
 
     /**
      * Return a dummy PDO statement
@@ -97,7 +83,7 @@ class ModelWithFilters extends Model {
 }
 class ModelWithCustomConnection extends Model {
     const ALTERNATE = 'alternate';
-    public static $_connection_key = self::ALTERNATE;
+    public static $_connection_name = self::ALTERNATE;
 }
 
 class Profile extends Model {
