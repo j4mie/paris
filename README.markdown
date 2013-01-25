@@ -37,6 +37,28 @@ You will need to install [Sphinx](http://sphinx-doc.org/) and then in the docs f
 
 The documentation will now be in docs/_build/html/index.html
 
+Let's See Some Code
+-------------------
+
+    class User extends Model {
+        public function tweets() {
+            return $this->has_many('Tweet');
+        }
+    }
+
+    class Tweet extends Model {}
+
+    $user = Model::factory('User')
+        ->where_equal('username', 'j4mie')
+        ->find_one();
+    $user->first_name = 'Jamie';
+    $user->save();
+
+    $tweets = $user->tweets()->find_many();
+    foreach ($tweets as $tweet) {
+        echo $tweet->text;
+    }
+
 Changelog
 ---------
 
