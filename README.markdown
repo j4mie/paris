@@ -22,13 +22,14 @@ Features
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
 * Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
 * Supports collections of models with method chaining to filter or apply actions to multiple results at once.
+* Multiple connections are supported
 
 Documentation
 -------------
 
 The documentation is hosted on Read the Docs: [paris.rtfd.org](http://paris.rtfd.org)
 
-## Building the Docs ##
+### Building the Docs ###
 
 You will need to install [Sphinx](http://sphinx-doc.org/) and then in the docs folder run:
 
@@ -41,6 +42,7 @@ Changelog
 
 #### 1.3.0 - released XXXX-XX-XX
 
+* Add support for multiple database connections
 * Exclude tests and git files from git exports (used by composer)
 * Update included Idiorm version for tests
 * Implement `set_expr` - closes issue #39
@@ -48,6 +50,7 @@ Changelog
 * Add support for the new IdiormResultSet object
 * Change Composer to use a classmap so that autoloading is better supported [[javierd](https://github.com/javiervd)] - issue #44
 * Move tests into PHPUnit to match Idiorm
+* Move documentation to use Sphinx
 
 #### 1.2.0 - released 2012-11-14
 
