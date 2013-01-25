@@ -153,13 +153,13 @@
          * will be the only configuration required to use Idiorm.
          */
         public static function configure($key, $value=null) {
-            // Shortcut: If only one argument is passed, 
+            // Shortcut: If only one argument is passed,
             // assume it's a connection string
             if (is_null($value)) {
                 $value = $key;
                 $key = 'connection_string';
             }
-            self::$_config[$key] = $value;
+            static::$_config[$key] = $value;
         }
 
         /**
