@@ -21,6 +21,7 @@ Contents:
    transactions
    validation
    migrations
+   connections
 
 
 

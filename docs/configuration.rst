@@ -38,8 +38,11 @@ Configuration
 The only configuration options provided by Paris itself are the
 ``$_table`` and ``$_id_column`` static properties on model classes. To
 configure the database connection, you should use Idiorm’s configuration
-system via the ``ORM::configure`` method. **See `Idiorm’s
-documentation`_ for full details.**
+system via the ``ORM::configure`` method.
+
+If you are using multiple connections, the optional `$_connection_key` static property may also be used to provide a default string key indicating which database connection in `ORM` should be used.
+
+**See `Idiorm’s documentation`_ for full details.**
 
 Query logging
 ~~~~~~~~~~~~~
