@@ -20,6 +20,7 @@ Contents:
    filters
    transactions
    validation
+   migrations
 
 
 
