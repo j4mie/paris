@@ -20,7 +20,7 @@ Features
 * Simple mechanism to encapsulate common queries in filter methods.
 * Built on top of [PDO](http://php.net/pdo).
 * Uses [prepared statements](http://uk.php.net/manual/en/pdo.prepared-statements.php) throughout to protect against [SQL injection](http://en.wikipedia.org/wiki/SQL_injection) attacks.
-* Database agnostic. Currently supports SQLite and MySQL. May support others, please give it a try!
+* Database agnostic. Currently supports SQLite, MySQL, Firebird and PostgreSQL. May support others, please give it a try!
 * Supports collections of models with method chaining to filter or apply actions to multiple results at once.
 * Multiple connections are supported
 
