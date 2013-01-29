@@ -129,3 +129,7 @@ class BookTwo extends Model {
         return $this->has_many_through('Author', 'AuthorBook', 'custom_book_id', 'custom_author_id');
     }
 }
+class MockPrefix_Simple extends Model { } 
+class MockPrefix_TableSpecified extends Model {
+    public static $_table = 'simple';
+} 

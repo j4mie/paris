@@ -31,6 +31,11 @@ your table names are in *lowercase\_with\_underscores* style. It will
 convert between the two automatically. For example, if your class is
 called ``CarTyre``, Paris will look for a table named ``car_tyre``.
 
+If you are using namespaces then they will be converted to a table name
+in a similar way. For example ``\\Models\\CarTyre`` would be converted to
+``models_car_tyre``. Note here that backslashes are replaced with underscores
+in addition to the *CapWords* replacement discussed in the previous paragraph.
+
 To override this default behaviour, add a **public static** property to
 your class called ``$_table``:
 
@@ -39,6 +44,14 @@ your class called ``$_table``:
     class User extends Model {
         public static $_table = 'my_user_table';
     }
+
+Auto Prefixing
+^^^^^^^^^^^^^^
+
+To save having type out model class name prefixes whenever code utilises ``Model::for_table()``
+it is possible to specify a prefix that will be prepended onto the class name.
+
+See the :doc:`Configuration` documentation for more details.
 
 ID Column
 ~~~~~~~~~

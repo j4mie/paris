@@ -159,6 +159,15 @@
         const DEFAULT_FOREIGN_KEY_SUFFIX = '_id';
 
         /**
+         * Set a prefix for model names. This can be a namespace or any other
+         * abitrary prefix such as the PEAR naming convention.
+         * @example Model::$auto_prefix_models = 'MyProject_MyModels_'; //PEAR
+         * @example Model::$auto_prefix_models = '\MyProject\MyModels\'; //Namespaces
+         * @var string
+         */
+        public static $auto_prefix_models = null;
+
+        /**
          * The ORM instance used by this model 
          * instance to communicate with the database.
          */
@@ -207,7 +216,7 @@
             return strtolower(preg_replace(
                 array('/\\\\/', '/(?<=[a-z])([A-Z])/', '/__/'),
                 array('_', '_$1', '_'),
-                $class_name
+                ltrim($class_name, '\\')
             ));
         }
 
@@ -242,7 +251,7 @@
          * its find_one or find_many methods are called.
          */
         public static function factory($class_name, $connection_name = null) {
-
+            $class_name = self::$auto_prefix_models . $class_name;
             $table_name = self::_get_table_name($class_name);
 
             if ($connection_name == null) {
