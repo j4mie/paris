@@ -32,7 +32,7 @@ convert between the two automatically. For example, if your class is
 called ``CarTyre``, Paris will look for a table named ``car_tyre``.
 
 If you are using namespaces then they will be converted to a table name
-in a similar way. For example ``\\Models\\CarTyre`` would be converted to
+in a similar way. For example ``\Models\CarTyre`` would be converted to
 ``models_car_tyre``. Note here that backslashes are replaced with underscores
 in addition to the *CapWords* replacement discussed in the previous paragraph.
 
