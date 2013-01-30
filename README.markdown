@@ -1,6 +1,8 @@
 Paris
 =====
 
+[![Build Status](https://travis-ci.org/j4mie/paris.png?branch=master)](https://travis-ci.org/j4mie/paris)
+
 [http://j4mie.github.com/idiormandparis/](http://j4mie.github.com/idiormandparis/)
 
 A lightweight Active Record implementation for PHP5.
