@@ -64,7 +64,7 @@ Let's See Some Code
 Changelog
 ---------
 
-#### 1.3.0 - released XXXX-XX-XX
+#### 1.3.0 - released 2013-01-31
 
 * Documentation moved to [paris.rtfd.org](http://paris.rtfd.org) and now built using [Sphinx](http://sphinx-doc.org/)
 * Add support for multiple database connections - closes [issue #15](https://github.com/j4mie/idiorm/issues/15) [[tag](https://github.com/tag)]
