@@ -41,25 +41,26 @@ The documentation will now be in docs/_build/html/index.html
 
 Let's See Some Code
 -------------------
-
-    class User extends Model {
-        public function tweets() {
-            return $this->has_many('Tweet');
-        }
+```php
+class User extends Model {
+    public function tweets() {
+        return $this->has_many('Tweet');
     }
+}
 
-    class Tweet extends Model {}
+class Tweet extends Model {}
 
-    $user = Model::factory('User')
-        ->where_equal('username', 'j4mie')
-        ->find_one();
-    $user->first_name = 'Jamie';
-    $user->save();
+$user = Model::factory('User')
+    ->where_equal('username', 'j4mie')
+    ->find_one();
+$user->first_name = 'Jamie';
+$user->save();
 
-    $tweets = $user->tweets()->find_many();
-    foreach ($tweets as $tweet) {
-        echo $tweet->text;
-    }
+$tweets = $user->tweets()->find_many();
+foreach ($tweets as $tweet) {
+    echo $tweet->text;
+}
+```
 
 Changelog
 ---------
