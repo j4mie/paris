@@ -11,8 +11,9 @@ documentation for details of this API.**
 
 For example:
 
-::
+.. code-block:: php
 
+    <?php
     $users = Model::factory('User')
         ->where('name', 'Fred')
         ->where_gte('age', 20)
@@ -21,8 +22,9 @@ For example:
 You can also use the same shortcut provided by Idiorm when looking up a
 record by its primary key ID:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->find_one($id);
 
 The only differences between using Idiorm and using Paris for querying
@@ -43,8 +45,9 @@ are as follows:
 You may also retrieve a count of the number of rows returned by your
 query. This method behaves exactly like Idiorm’s ``count`` method:
 
-::
+.. code-block:: php
 
+    <?php
     $count = Model::factory('User')->where_lt('age', 20)->count();
 
 Getting data from objects, updating and inserting data
@@ -55,23 +58,26 @@ they were instances of Idiorm’s raw ``ORM`` class.
 
 You can access data:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->find_one($id);
     echo $user->name;
 
 Update data and save the instance:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->find_one($id);
     $user->name = 'Paris';
     $user->save();
 
 To create a new (empty) instance, use the ``create`` method:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->create();
     $user->name = 'Paris';
     $user->save();
@@ -79,14 +85,16 @@ To create a new (empty) instance, use the ``create`` method:
 To check whether a property has been changed since the object was
 created (or last saved), call the ``is_dirty`` method:
 
-::
+.. code-block:: php
 
+    <?php
     $name_has_changed = $person->is_dirty('name'); // Returns true or false
 
 You can also use database expressions when setting values on your model:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->find_one($id);
     $user->name = 'Paris';
     $user->set_expr('last_logged_in', 'NOW()');
@@ -95,8 +103,9 @@ You can also use database expressions when setting values on your model:
 Of course, because these objects are instances of your base model
 classes, you can also call methods that you have defined on them:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
         public function full_name() {
             return $this->first_name . ' ' . $this->last_name;
@@ -109,8 +118,9 @@ classes, you can also call methods that you have defined on them:
 To delete the database row associated with an instance of your model,
 call its ``delete`` method:
 
-::
+.. code-block:: php
 
+    <?php
     $user = Model::factory('User')->find_one($id);
     $user->delete();
 
@@ -122,8 +132,9 @@ The ``as_array`` method takes column names as optional arguments. If one
 or more of these arguments is supplied, only matching column names will
 be returned.
 
-::
+.. code-block:: php
 
+    <?php
     class Person extends Model {
     }
 

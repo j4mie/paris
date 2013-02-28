@@ -10,8 +10,9 @@ reasons why.
 To integrate Paris with PHPMig you will need to follow their `installation
 instructions`_ and then configure it to use the Paris PDO instance:
 
-::
+.. code-block:: php
 
+   <?php
    $container['db'] = $container->share(function(){
        return ORM::get_db();
    });

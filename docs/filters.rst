@@ -18,8 +18,9 @@ certain pieces of functionality. In this situation, you may often wish
 to retrieve a list of users with the role ‘admin’. To do this, add a
 static method called (for example) ``admins`` to your Model class:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
         public static function admins($orm) {
             return $orm->where('role', 'admin');
@@ -28,14 +29,16 @@ static method called (for example) ``admins`` to your Model class:
 
 You can then use this filter in your queries:
 
-::
+.. code-block:: php
 
+    <?php
     $admin_users = Model::factory('User')->filter('admins')->find_many();
 
 You can also chain it with other methods as normal:
 
-::
+.. code-block:: php
 
+    <?php
     $young_admins = Model::factory('User')
                         ->filter('admins')
                         ->where_lt('age', 18)
@@ -53,8 +56,9 @@ For example, let’s say you wish to generalise your role filter (see
 above) to allow you to retrieve users with any role. You can pass the
 role name to the filter as an argument:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
         public static function has_role($orm, $role) {
             return $orm->where('role', $role);

@@ -54,8 +54,9 @@ provided by Paris, passing in the class name of the related object. The
 ``profile`` method should return an ORM instance ready for (optional)
 further filtering.
 
-::
+.. code-block:: php
 
+    <?php
     class Profile extends Model {
     }
 
@@ -67,8 +68,9 @@ further filtering.
 
 The API for this method works as follows:
 
-::
+.. code-block:: php
 
+    <?php
     // Select a particular user from the database
     $user = Model::factory('User')->find_one($user_id);
 
@@ -97,8 +99,9 @@ provided by Paris, passing in the class name of the related objects.
 ``posts`` method should return an ORM instance ready for (optional)
 further filtering.
 
-::
+.. code-block:: php
 
+    <?php
     class Post extends Model {
     }
 
@@ -110,8 +113,9 @@ further filtering.
 
 The API for this method works as follows:
 
-::
+.. code-block:: php
 
+    <?php
     // Select a particular user from the database
     $user = Model::factory('User')->find_one($user_id);
 
@@ -132,8 +136,9 @@ The ‘other side’ of ``has_one`` and ``has_many`` is ``belongs_to``. This
 method call takes identical parameters as these methods, but assumes the
 foreign key is on the *current* (base) table, not the related table.
 
-::
+.. code-block:: php
 
+    <?php
     class Profile extends Model {
         public function user() {
             return $this->belongs_to('User');
@@ -145,8 +150,9 @@ foreign key is on the *current* (base) table, not the related table.
 
 The API for this method works as follows:
 
-::
+.. code-block:: php
 
+    <?php
     // Select a particular profile from the database
     $profile = Model::factory('Profile')->find_one($profile_id);
 
@@ -185,8 +191,9 @@ objects. **Pass the model class name literally, not a pluralised
 version**. The ``authors`` method should return an ORM instance ready
 for (optional) further filtering.
 
-::
+.. code-block:: php
 
+    <?php
     class Author extends Model {
         public function books() {
             return $this->has_many_through('Book');
@@ -204,8 +211,9 @@ for (optional) further filtering.
 
 The API for this method works as follows:
 
-::
+.. code-block:: php
 
+    <?php
     // Select a particular book from the database
     $book = Model::factory('Book')->find_one($book_id);
 

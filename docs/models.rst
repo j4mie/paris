@@ -9,8 +9,9 @@ example, if you are building an application that requires users, you
 should create a ``User`` class. Your model classes should extend the
 base ``Model`` class:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
     }
 
@@ -39,8 +40,9 @@ in addition to the *CapWords* replacement discussed in the previous paragraph.
 To override this default behaviour, add a **public static** property to
 your class called ``$_table``:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
         public static $_table = 'my_user_table';
     }
@@ -61,8 +63,9 @@ column. By default, Paris will use a column called ``id``. To override
 this default behaviour, add a **public static** property to your class
 called ``$_id_column``:
 
-::
+.. code-block:: php
 
+    <?php
     class User extends Model {
         public static $_id_column = 'my_id_column';
     }
