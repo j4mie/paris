@@ -273,44 +273,44 @@
          * only difference is whether find_one or find_many is used to complete
          * the method chain.
          */
-        protected function _has_one_or_many($associated_class_name, $foreign_key_name=null) {
+        protected function _has_one_or_many($associated_class_name, $foreign_key_name=null, $connection_name=null) {
             $base_table_name = self::_get_table_name(get_class($this));
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $base_table_name);
-            return self::factory($associated_class_name)->where($foreign_key_name, $this->id());
+            return self::factory($associated_class_name, $connection_name)->where($foreign_key_name, $this->id());
         }
 
         /**
          * Helper method to manage one-to-one relations where the foreign
          * key is on the associated table.
          */
-        protected function has_one($associated_class_name, $foreign_key_name=null) {
-            return $this->_has_one_or_many($associated_class_name, $foreign_key_name);
+        protected function has_one($associated_class_name, $foreign_key_name=null, $connection_name=null) {
+            return $this->_has_one_or_many($associated_class_name, $foreign_key_name, $connection_name);
         }
 
         /**
          * Helper method to manage one-to-many relations where the foreign
          * key is on the associated table.
          */
-        protected function has_many($associated_class_name, $foreign_key_name=null) {
-            return $this->_has_one_or_many($associated_class_name, $foreign_key_name);
+        protected function has_many($associated_class_name, $foreign_key_name=null, $connection_name=null) {
+            return $this->_has_one_or_many($associated_class_name, $foreign_key_name, $connection_name);
         }
 
         /**
          * Helper method to manage one-to-one and one-to-many relations where
          * the foreign key is on the base table.
          */
-        protected function belongs_to($associated_class_name, $foreign_key_name=null) {
+        protected function belongs_to($associated_class_name, $foreign_key_name=null, $connection_name=null) {
             $associated_table_name = self::_get_table_name($associated_class_name);
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $associated_table_name);
             $associated_object_id = $this->$foreign_key_name;
-            return self::factory($associated_class_name)->where_id_is($associated_object_id);
+            return self::factory($associated_class_name, $connection_name)->where_id_is($associated_object_id);
         }
 
         /**
          * Helper method to manage many-to-many relationships via an intermediate model. See
          * README for a full explanation of the parameters.
          */
-        protected function has_many_through($associated_class_name, $join_class_name=null, $key_to_base_table=null, $key_to_associated_table=null) {
+        protected function has_many_through($associated_class_name, $join_class_name=null, $key_to_base_table=null, $key_to_associated_table=null, $connection_name=null) {
             $base_class_name = get_class($this);
 
             // The class name of the join model, if not supplied, is
@@ -335,7 +335,7 @@
             $key_to_base_table = self::_build_foreign_key_name($key_to_base_table, $base_table_name);
             $key_to_associated_table = self::_build_foreign_key_name($key_to_associated_table, $associated_table_name);
 
-            return self::factory($associated_class_name)
+            return self::factory($associated_class_name, $connection_name)
                 ->select("{$associated_table_name}.*")
                 ->join($join_table_name, array("{$associated_table_name}.{$associated_table_id_column}", '=', "{$join_table_name}.{$key_to_associated_table}"))
                 ->where("{$join_table_name}.{$key_to_base_table}", $this->id());
