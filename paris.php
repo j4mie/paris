@@ -447,4 +447,23 @@
         public function hydrate($data) {
             $this->orm->hydrate($data)->force_all_dirty();
         }
+
+        /**
+         * Magic method to capture calls to undefined class methods.
+         * In this case we are attempting to convert camel case formatted 
+         * methods into underscore formatted methods.
+         *
+         * This allows us to call methods using camel case and remain 
+         * backwards compatible.
+         * 
+         * @param  string   $name
+         * @param  array    $arguments
+         * @return ORMWrapper
+         */
+        public function __call($name, $arguments)
+        {
+            $method = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
+
+            return call_user_func_array(array($this, $method), $arguments);
+        }
     }
