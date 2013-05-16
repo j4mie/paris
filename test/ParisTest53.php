@@ -30,6 +30,12 @@ class ParisTest53 extends PHPUnit_Framework_TestCase {
         $expected = 'SELECT * FROM `custom_table`';
         $this->assertEquals($expected, ORM::get_last_query());
     }
+    
+    public function testShortcut() {
+        \Paris\Tests\Simple::find_many();
+        $expected = 'SELECT * FROM `paris_tests_simple`';
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
 
 }
 
