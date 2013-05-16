@@ -454,8 +454,10 @@
          */
         public static function __callStatic($method, $parameters)
         {
-            $model = static::factory(get_called_class());
+            if(function_exists('get_called_class')) {
+                $model = static::factory(get_called_class());
       		
-            return call_user_func_array(array($model, $method), $parameters);
+                return call_user_func_array(array($model, $method), $parameters);
+            }
         }
     }
