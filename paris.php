@@ -447,4 +447,15 @@
         public function hydrate($data) {
             $this->orm->hydrate($data)->force_all_dirty();
         }
+        
+        /**
+         * Calls static methods directly on the ORMWrapper
+         *
+         */
+        public static function __callStatic($method, $parameters)
+        {
+            $model = static::factory(get_called_class());
+      		
+            return call_user_func_array(array($model, $method), $parameters);
+        }
     }
