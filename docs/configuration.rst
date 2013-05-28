@@ -73,7 +73,7 @@ system via the ``ORM::configure`` method.
 
 If you are using multiple connections, the optional `$_connection_key` static property may also be used to provide a default string key indicating which database connection in `ORM` should be used.
 
-**See `Idiorm’s documentation`_ for full details.**
+**See `Idiorm's documentation`_ for full details.**
 
 Query logging
 ~~~~~~~~~~~~~
