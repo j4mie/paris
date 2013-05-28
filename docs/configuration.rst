@@ -14,7 +14,7 @@ project directory, and ``require`` both.
     require_once 'your/path/to/paris.php';
 
 Then, you need to tell Idiorm how to connect to your database. **For
-full details of how to do this, see `Idiorm’s documentation`_.**
+full details of how to do this, see `Idiorm's documentation`_.**
 
 Briefly, you need to pass a *Data Source Name* connection string to the
 ``configure`` method of the ORM class.
@@ -91,5 +91,5 @@ the log. ``ORM::get_last_query()`` returns the most recent query
 executed. ``ORM::get_query_log()`` returns an array of all queries
 executed.
 
-.. _Idiorm’s documentation: http://github.com/j4mie/idiorm/
+.. _Idiorm's documentation: http://github.com/j4mie/idiorm/
 .. _Idiorm: http://github.com/j4mie/idiorm/
