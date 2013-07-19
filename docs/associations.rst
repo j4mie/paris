@@ -84,6 +84,14 @@ called ``user_id`` on the table used by the ``Profile`` class. To
 override this behaviour, add a second argument to your ``has_one`` call,
 passing the name of the column to use.
 
+In addition, Paris assumes that the foreign key column in the current (base)
+ table is the primary key column of the base table. In the example above, 
+Paris will use the column called ``user_id`` (assuming ``user_id`` is the 
+primary key for the user table) in the base table (in this case the user table) 
+as the foreign key column in the base table. To override this behaviour, 
+add a third argument to your ``has_one call``, passing the name of the column 
+you intend to use as the foreign key column in the base table.
+
 Has many
 ^^^^^^^^
 
@@ -129,6 +137,14 @@ called ``user_id`` on the table used by the ``Post`` class. To override
 this behaviour, add a second argument to your ``has_many`` call, passing
 the name of the column to use.
 
+In addition, Paris assumes that the foreign key column in the current (base) 
+table is the primary key column of the base table. In the example above, Paris 
+will use the column called ``user_id`` (assuming ``user_id`` is the primary key 
+for the user table) in the base table (in this case the user table) as the 
+foreign key column in the base table. To override this behaviour, add a third 
+argument to your ``has_many call``, passing the name of the column you intend 
+to use as the foreign key column in the base table.
+
 Belongs to
 ^^^^^^^^^^
 
@@ -165,6 +181,13 @@ appended. In the example above, Paris will look for a column named
 ``user_id``. To override this behaviour, pass a second argument to the
 ``belongs_to`` method, specifying the name of the column on the current
 (base) table to use.
+
+Paris also makes an assumption that the foreign key in the associated (related) 
+table is the primary key column of the related table. In the example above, 
+Paris will look for a column named ``user_id`` in the user table (the related 
+table in this example). To override this behaviour, pass a third argument to 
+the belongs_to method, specifying the name of the column in the related table 
+to use as the foreign key column in the related table.
 
 Has many through
 ^^^^^^^^^^^^^^^^
@@ -246,3 +269,11 @@ this is optional, and defaults to the name of the base table with
 **Fourth argument: custom key to associated table on intermediate
 table** - this is optional, and defaults to the name of the associated
 table with ``_id`` appended.
+
+**Fifth argument: foreign key column in the base table** - 
+this is optional, and defaults to the name of the primary key column in 
+the base table.
+
+**Sixth argument: foreign key column in the associated table** - 
+this is optional, and defaults to the name of the primary key column 
+in the associated table.
