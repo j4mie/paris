@@ -102,6 +102,13 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
+    public function testHasOneWithCustomForeignKeyNameInBaseAndAssociatedTables() {
+        $user5 = Model::factory('UserFive')->find_one(1);
+        $profile = $user5->profile()->find_one();
+        $expected = "SELECT * FROM `profile` WHERE `my_custom_fk_column` = 'Fred' LIMIT 1";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
     public function testBelongsToRelation() {
         $user2 = Model::factory('UserTwo')->find_one(1);
         $profile = $user2->profile()->find_one();
@@ -119,6 +126,14 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
+    public function testBelongsToRelationWithCustomForeignKeyNameInBaseAndAssociatedTables() {
+        $profile3 = Model::factory('ProfileThree')->find_one(1);
+        $profile3->custom_user_fk_column = 'John Doe';
+        $user4 = $profile3->user()->find_one();
+        $expected = "SELECT * FROM `user` WHERE `name` = 'John Doe' LIMIT 1";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
     public function testHasManyRelation() {
         $user4 = Model::factory('UserThree')->find_one(1);
         $posts = $user4->posts()->find_many();
@@ -133,6 +148,13 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
+    public function testHasManyRelationWithCustomForeignKeyNameInBaseAndAssociatedTables() {
+        $user6 = Model::factory('UserSix')->find_one(1);
+        $posts = $user6->posts()->find_many();
+        $expected = "SELECT * FROM `post` WHERE `my_custom_fk_column` = 'Fred'";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
     public function testHasManyThroughRelation() {
         $book = Model::factory('Book')->find_one(1);
         $authors = $book->authors()->find_many();
@@ -144,6 +166,29 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $book2 = Model::factory('BookTwo')->find_one(1);
         $authors2 = $book2->authors()->find_many();
         $expected = "SELECT `author`.* FROM `author` JOIN `author_book` ON `author`.`id` = `author_book`.`custom_author_id` WHERE `author_book`.`custom_book_id` = '1'";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
+    public function testHasManyThroughRelationWithCustomIntermediateModelAndKeyNamesAndCustomForeignKeyInBaseAndAssociatedTables() {
+        $book3 = Model::factory('BookThree')->find_one(1);
+        $book3->custom_book_id_in_book_table = 49;
+        $authors3 = $book3->authors()->find_many();
+        $expected = "SELECT `author`.* FROM `author` JOIN `author_book` ON `author`.`custom_author_id_in_author_table` = `author_book`.`custom_author_id` WHERE `author_book`.`custom_book_id` = '49'";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
+    public function testHasManyThroughRelationWithCustomIntermediateModelAndKeyNamesAndCustomForeignKeyInAssociatedTable() {
+        $book4 = Model::factory('BookFour')->find_one(1);
+        $authors4 = $book4->authors()->find_many();
+        $expected = "SELECT `author`.* FROM `author` JOIN `author_book` ON `author`.`custom_author_id_in_author_table` = `author_book`.`custom_author_id` WHERE `author_book`.`custom_book_id` = '1'";
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
+    public function testHasManyThroughRelationWithCustomIntermediateModelAndKeyNamesAndCustomForeignKeyInBaseTable() {
+        $book5 = Model::factory('BookFive')->find_one(1);
+        $book5->custom_book_id_in_book_table = 49;
+        $authors5 = $book5->authors()->find_many();
+        $expected = "SELECT `author`.* FROM `author` JOIN `author_book` ON `author`.`id` = `author_book`.`custom_author_id` WHERE `author_book`.`custom_book_id` = '49'";
         $this->assertEquals($expected, ORM::get_last_query());
     }
 

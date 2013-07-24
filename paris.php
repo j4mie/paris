@@ -365,9 +365,9 @@
     
             /*
                 "   SELECT {$associated_table_name}.*
-                      FROM {$associated_table_name}, {$join_table_name}
-                     WHERE {$associated_table_name}.{$associated_table_id_column} = {$join_table_name}.{$key_to_associated_table}
-                       AND {$join_table_name}.{$key_to_base_table} = {$this->$base_table_id_column} ;"
+                      FROM {$associated_table_name} JOIN {$join_table_name}
+                        ON {$associated_table_name}.{$associated_table_id_column} = {$join_table_name}.{$key_to_associated_table}
+                     WHERE {$join_table_name}.{$key_to_base_table} = {$this->$base_table_id_column} ;"
             */
 
             return self::factory($associated_class_name)
