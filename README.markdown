@@ -62,20 +62,12 @@ foreach ($tweets as $tweet) {
 }
 ```
 
-Users who have PHP 5.3+ can simply do the following:
-```php
-$user = User::where_equal('username', 'j4mie')
-    ->find_one();
-```
-instead of:
-```php
-$user = Model::factory('User')
-    ->where_equal('username', 'j4mie')
-    ->find_one();
-```
-
 Changelog
 ---------
+
+#### 1.4.0 - released 2013-XX-XX
+
+* Call methods against model class directly eg. `User::find_many()` - PHP 5.3 only [issue #62](https://github.com/j4mie/idiorm/issues/62) [[Lapayo](https://github.com/Lapayo)]
 
 #### 1.3.0 - released 2013-01-31
 
