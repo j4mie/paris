@@ -62,6 +62,18 @@ foreach ($tweets as $tweet) {
 }
 ```
 
+Users who have PHP 5.3+ can simply do the following:
+```php
+$user = User::where_equal('username', 'j4mie')
+    ->find_one();
+```
+instead of:
+```php
+$user = Model::factory('User')
+    ->where_equal('username', 'j4mie')
+    ->find_one();
+```
+
 Changelog
 ---------
 

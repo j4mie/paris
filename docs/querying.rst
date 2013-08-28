@@ -27,6 +27,18 @@ record by its primary key ID:
     <?php
     $user = Model::factory('User')->find_one($id);
 
+If you are using PHP 5.3+ you can also do the following: 
+
+.. code-block:: php
+
+    <?php
+    $users = User::where('name', 'Fred')
+        ->where_gte('age', 20)
+        ->find_many();
+        
+This does the same as the example above but is shorter and more readable.
+
+
 The only differences between using Idiorm and using Paris for querying
 are as follows:
 
