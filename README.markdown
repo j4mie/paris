@@ -67,12 +67,13 @@ Changelog
 
 #### 1.4.0 - released 2013-XX-XX
 
-* Call methods against model class directly eg. `User::find_many()` - PHP 5.3 only [issue #62](https://github.com/j4mie/idiorm/issues/62) [[Lapayo](https://github.com/Lapayo)]
+* Call methods against model class directly eg. `User::find_many()` - PHP 5.3 only [[Lapayo](https://github.com/Lapayo)] - [issue #62](https://github.com/j4mie/idiorm/issues/62)
+* Allow specification of connection on relation methods [[alexandrusavin](https://github.com/alexandrusavin)] - [issue #55](https://github.com/j4mie/idiorm/issues/55)
 
 #### 1.3.0 - released 2013-01-31
 
 * Documentation moved to [paris.rtfd.org](http://paris.rtfd.org) and now built using [Sphinx](http://sphinx-doc.org/)
-* Add support for multiple database connections - closes [issue #15](https://github.com/j4mie/idiorm/issues/15) [[tag](https://github.com/tag)]
+* Add support for multiple database connections [[tag](https://github.com/tag)] - [issue #15](https://github.com/j4mie/idiorm/issues/15)
 * Allow a prefix for model class names - see Configuration in the documentation - closes [issues #33](https://github.com/j4mie/paris/issues/33)
 * Exclude tests and git files from git exports (used by composer)
 * Implement `set_expr` - closes [issue #39](https://github.com/j4mie/paris/issues/39)
