@@ -6,8 +6,7 @@ Paris
 [http://j4mie.github.com/idiormandparis/](http://j4mie.github.com/idiormandparis/)
 
 ---
-
-## Feature complete
+### Feature complete
 
 Paris is now considered to be feature complete as of version 1.4.0. Whilst it will continue to be maintained with bug fixes there will be no further new features added.
 
