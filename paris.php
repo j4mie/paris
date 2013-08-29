@@ -317,19 +317,24 @@
             // formed by concatenating the names of the base class
             // and the associated class, in alphabetical order.
             if (is_null($join_class_name)) {
-                $class_names = array($base_class_name, $associated_class_name);
+                $model = explode('\\', $base_class_name);
+                $model_name = end($model);
+                if (substr($model_name, 0, strlen(self::$auto_prefix_models)) == self::$auto_prefix_models) {
+                    $model_name = substr($model_name, strlen(self::$auto_prefix_models), strlen($model_name));
+                }
+                $class_names = array($model_name, $associated_class_name);
                 sort($class_names, SORT_STRING);
                 $join_class_name = join("", $class_names);
             }
 
             // Get table names for each class
             $base_table_name = self::_get_table_name($base_class_name);
-            $associated_table_name = self::_get_table_name($associated_class_name);
-            $join_table_name = self::_get_table_name($join_class_name);
+            $associated_table_name = self::_get_table_name(self::$auto_prefix_models . $associated_class_name);
+            $join_table_name = self::_get_table_name(self::$auto_prefix_models . $join_class_name);
 
             // Get ID column names
             $base_table_id_column = self::_get_id_column_name($base_class_name);
-            $associated_table_id_column = self::_get_id_column_name($associated_class_name);
+            $associated_table_id_column = self::_get_id_column_name(self::$auto_prefix_models . $associated_class_name);
 
             // Get the column names for each side of the join table
             $key_to_base_table = self::_build_foreign_key_name($key_to_base_table, $base_table_name);

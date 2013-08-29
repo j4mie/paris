@@ -54,6 +54,22 @@ namespace Paris\Tests {
             $expected = 'SELECT * FROM `simple`';
             $this->assertEquals($expected, ORM::get_last_query());
         }
+
+        public function testPrefixOnHasManyThroughRelation() {
+            Model::$auto_prefix_models = '\\Tests3\\';
+            $book = Model::factory('Book')->find_one(1);
+            $authors = $book->authors()->find_many();
+            $expected = "SELECT `prefix_author`.* FROM `prefix_author` JOIN `prefix_authorbook` ON `prefix_author`.`id` = `prefix_authorbook`.`prefix_author_id` WHERE `prefix_authorbook`.`prefix_book_id` = '1'";
+            $this->assertEquals($expected, ORM::get_last_query());
+        }
+
+        public function testPrefixOnHasManyThroughRelationWithCustomIntermediateModelAndKeyNames() {
+            Model::$auto_prefix_models = '\\Tests3\\';
+            $book2 = Model::factory('BookTwo')->find_one(1);
+            $authors2 = $book2->authors()->find_many();
+            $expected = "SELECT `prefix_author`.* FROM `prefix_author` JOIN `prefix_authorbook` ON `prefix_author`.`id` = `prefix_authorbook`.`custom_author_id` WHERE `prefix_authorbook`.`custom_book_id` = '1'";
+            $this->assertEquals($expected, ORM::get_last_query());
+        }
     }
 }
 
@@ -70,4 +86,25 @@ namespace Tests2 {
     class TableSpecified extends Model {
         public static $_table = 'simple';
     }
+}
+namespace Tests3 { 
+    use ORM, Model, MockPDO; 
+	class Author extends Model {
+		public static $_table = 'prefix_author';
+	}
+	class AuthorBook extends Model {
+		public static $_table = 'prefix_authorbook';
+	}
+	class Book extends Model {
+		public static $_table = 'prefix_book';
+		public function authors() {
+			return $this->has_many_through('Author');
+		}
+	}
+	class BookTwo extends Model {
+		public static $_table = 'prefix_booktwo';
+		public function authors() {
+			return $this->has_many_through('Author', 'AuthorBook', 'custom_book_id', 'custom_author_id');
+		}
+	}
 }
