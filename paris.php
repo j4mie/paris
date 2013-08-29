@@ -300,7 +300,7 @@
          * the foreign key is on the base table.
          */
         protected function belongs_to($associated_class_name, $foreign_key_name=null, $connection_name=null) {
-            $associated_table_name = self::_get_table_name($associated_class_name);
+            $associated_table_name = self::_get_table_name(self::$auto_prefix_models . $associated_class_name);
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $associated_table_name);
             $associated_object_id = $this->$foreign_key_name;
             return self::factory($associated_class_name, $connection_name)->where_id_is($associated_object_id);
