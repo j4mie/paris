@@ -5,6 +5,8 @@ Paris
 
 [http://j4mie.github.com/idiormandparis/](http://j4mie.github.com/idiormandparis/)
 
+**Feature complete:** Paris is considered to be feature complete as of version 1.4.0. Whilst it will continue to be maintained with bug fixes there will be no further new features added.
+
 A lightweight Active Record implementation for PHP5.
 
 Built on top of [Idiorm](http://github.com/j4mie/idiorm/).
@@ -71,6 +73,7 @@ Changelog
 * Add PSR-1 compliant camelCase method calls to Idiorm (PHP 5.3+ required) [[crhayes](https://github.com/crhayes)] - [issue #59](https://github.com/j4mie/idiorm/issues/59)
 * Allow specification of connection on relation methods [[alexandrusavin](https://github.com/alexandrusavin)] - [issue #55](https://github.com/j4mie/idiorm/issues/55)
 * Make tests/bootstrap.php HHVM compatible [[JoelMarcey](https://github.com/JoelMarcey)] - [issue #71](https://github.com/j4mie/idiorm/issues/71)
+* belongs_to doesn't work with $auto_prefix_models ([issue #70](https://github.com/j4mie/paris/issues/70))
 
 #### 1.3.0 - released 2013-01-31
 
