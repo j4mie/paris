@@ -62,6 +62,38 @@ query. This method behaves exactly like Idiorm’s ``count`` method:
     <?php
     $count = Model::factory('User')->where_lt('age', 20)->count();
 
+A note on PSR-1 and camelCase
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+All the methods detailed in the documentation can also be called in a PSR-1 way:
+underscores (_) become camelCase. Here follows an example of one query chain
+being converted to a PSR-1 compliant style.
+
+.. code-block:: php
+
+    <?php
+    // documented and default style
+    $count = Model::factory('User')->where_lt('age', 20)->find_one();
+
+    // PSR-1 compliant style
+    $count = Model::factory('User')->whereLt('age', 20)->findOne();
+
+As you can see any method can be changed from the documented underscore (_) format
+to that of a camelCase method name.
+
+.. note::
+
+    In the background the PSR-1 compliant style uses the `__call()` and 
+    `__callStatic()` magic methods to map the camelCase method name you supply
+    to the original underscore method name. It then uses `call_user_func_array()`
+    to apply the arguments to the method. If this minimal overhead is too great
+    then you can simply revert to using the underscore methods to avoid it. In
+    general this will not be a bottle neck in any application however and should
+    be considered a micro-optimisation.
+
+    As `__callStatic()` was added in PHP 5.3.0 you will need at least that version
+    of PHP to use this feature in any meaningful way.
+
 Getting data from objects, updating and inserting data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
