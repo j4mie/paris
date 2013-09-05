@@ -75,7 +75,7 @@ Changelog
 #### 1.4.1 - released 2013-09-05
 
 * Increment composer.json requirement for Idiorm to 1.4.0 [[michaelward82](https://github.com/michaelward82)] - [Issue #72](https://github.com/j4mie/paris/pull/72)
-*
+
 #### 1.4.0 - released 2013-09-05
 
 * Call methods against model class directly eg. `User::find_many()` - PHP 5.3 only [[Lapayo](https://github.com/Lapayo)] - [issue #62](https://github.com/j4mie/idiorm/issues/62)
