@@ -72,7 +72,7 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
-#### 1.4.0 - released 2013-XX-XX
+#### 1.4.0 - released 2013-09-05
 
 * Call methods against model class directly eg. `User::find_many()` - PHP 5.3 only [[Lapayo](https://github.com/Lapayo)] - [issue #62](https://github.com/j4mie/idiorm/issues/62)
 * `find_many()` now returns an associative array with the databases primary ID as the array keys [[Surt](https://github.com/Surt)] - see commit [9ac0ae7](https://github.com/j4mie/paris/commit/9ac0ae7d302f1980c95b97a98cbd6d5b2c04923f) and Idiorm [issue #133](https://github.com/j4mie/idiorm/issues/133)
