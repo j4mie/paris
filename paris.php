@@ -523,7 +523,7 @@
             if (method_exists($this, $method)) {
                 return call_user_func_array(array($this, $method), $arguments);
             } else {
-                return false;
+                throw new Exception("Method $name() does not exist in class " . get_class($this));
             }
         }
     }
