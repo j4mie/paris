@@ -198,4 +198,9 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(count($result_set), 5);
     }
 
+    public function testInvalidFunctionCallDoesNotRecurse() {
+        $model = new Model();
+        $result = $model->noneExistentFunction();
+        $this->assertEquals(false, $result);
+    }
 }
