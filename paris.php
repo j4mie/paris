@@ -516,10 +516,16 @@
          * 
          * @param  string   $name
          * @param  array    $arguments
-         * @return ORMWrapper
+         * @return bool|ORMWrapper
          */
         public function __call($name, $arguments) {
             $method = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
-            return call_user_func_array(array($this, $method), $arguments);
+            if (method_exists($this, $method)) {
+                return call_user_func_array(array($this, $method), $arguments);
+            } else {
+                throw new ParisMethodMissingException("Method $name() does not exist in class " . get_class($this));
+            }
         }
     }
+
+    class ParisMethodMissingException extends Exception {}

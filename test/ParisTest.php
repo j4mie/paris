@@ -198,4 +198,19 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(count($result_set), 5);
     }
 
+    /**
+     * @expectedException ParisMethodMissingException
+     */
+    public function testInvalidModelFunctionCallDoesNotRecurse() {
+        $model = new Model();
+        $model->noneExistentFunction();
+    }
+
+    /**
+     * @expectedException IdiormMethodMissingException
+     */
+    public function testInvalidORMWrapperFunctionCallDoesNotRecurse() {
+        $ORMWrapper = Model::factory('Simple');
+        $ORMWrapper->noneExistentFunction();
+    }
 }
