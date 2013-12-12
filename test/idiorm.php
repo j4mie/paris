@@ -611,23 +611,7 @@
          */
         protected function _find_many() {
             $rows = $this->_run();
-            return $this->_instances_with_id_as_key($rows);
-        }
-
-        /**
-         * Create instances of each row in the result and map
-         * them to an associative array with the primary IDs as
-         * the array keys.
-         * @param array $rows
-         * @return array
-         */
-        protected function _instances_with_id_as_key($rows) {
-            $instances = array();
-            foreach($rows as $row) {
-                $row = $this->_create_instance_from_row($row);
-                $instances[$row->id()] = $row;
-            }
-            return $instances;
+            return array_map(array($this, '_create_instance_from_row'), $rows);
         }
 
         /**
@@ -1673,7 +1657,7 @@
          * database when save() is called.
          */
         public function set($key, $value = null) {
-            return $this->_set_orm_property($key, $value);
+            $this->_set_orm_property($key, $value);
         }
 
         /**
@@ -1686,7 +1670,7 @@
          * @param string|null $value
          */
         public function set_expr($key, $value = null) {
-            return $this->_set_orm_property($key, $value, true);
+            $this->_set_orm_property($key, $value, true);
         }
 
         /**
@@ -1708,7 +1692,6 @@
                     $this->_expr_fields[$field] = true;
                 }
             }
-            return $this;
         }
 
         /**
