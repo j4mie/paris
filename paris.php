@@ -119,19 +119,16 @@
         }
 
         /**
-         * Create instances of each row in the result and map
-         * them to an associative array with the primary IDs as
-         * the array keys.
-         * @param array $rows
-         * @return array
+         * Wrap Idiorm's find_many method to return
+         * an array of instances of the class associated
+         * with this wrapper instead of the raw ORM class.
          */
-        protected function _instances_with_id_as_key($rows) {
-            $instances = array();
-            foreach($rows as $row) {
-                $row = $this->_create_model_instance($this->_create_instance_from_row($row));
-                $instances[$row->id()] = $row;
+        public function find_many() {
+            $results = parent::find_many();
+            foreach($results as $key => $result) {
+                $results[$key] = $this->_create_model_instance($result);
             }
-            return $instances;
+            return $results;
         }
 
         /**

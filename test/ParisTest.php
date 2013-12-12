@@ -192,10 +192,4 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
-    public function testFindResultSet() {
-        $result_set = Model::factory('BookFive')->find_result_set();
-        $this->assertInstanceOf('IdiormResultSet', $result_set);
-        $this->assertSame(count($result_set), 5);
-    }
-
 }
