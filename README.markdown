@@ -72,6 +72,11 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
+#### 1.5.0 - released 2014-01-XX
+
+* Prevent invalid method calls from triggering infinite recursion [[michaelward82](https://github.com/michaelward82)] - [issue #75](https://github.com/j4mie/idiorm/issues/75)
+* Add HHVM to travis-ci build matrix [[ptarjan](https://github.com/ptarjan)] - [issue #81](https://github.com/j4mie/idiorm/issues/81)
+
 #### 1.4.2 - released 2013-12-12
 
 **Patch update to remove a broken pull request** - may have consequences for users of 1.4.0 and 1.4.1 that exploited the "`find_many()` now returns an associative array with the databases primary ID as the array keys" change that was merged in 1.4.0.
