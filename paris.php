@@ -102,7 +102,7 @@
          */
         protected function _create_model_instance($orm) {
             if (! $orm instanceof ORM) {
-                return false;
+                return null;
             }
             $model = new $this->_class_name($orm);
             return $model;
@@ -178,6 +178,10 @@
          * dependency injection of the ORM instance associated with this Model instance.
          */
         public function __construct($orm) {
+            if (! $orm instanceof ORM) {
+                throw new Exception('$orm must be an instanceof Idiorm ORM!');
+            }
+
             $this->orm = $orm;
         }
 
