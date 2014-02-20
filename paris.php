@@ -101,11 +101,10 @@
          * it with the supplied Idiorm instance.
          */
         protected function _create_model_instance($orm) {
-            if ($orm === false) {
-                return false;
+            if (! $orm instanceof ORM) {
+                return null;
             }
-            $model = new $this->_class_name();
-            $model->set_orm($orm);
+            $model = new $this->_class_name($orm);
             return $model;
         }
 
@@ -172,6 +171,19 @@
          * instance to communicate with the database.
          */
         public $orm;
+
+        /**
+         * Constructor
+         * 
+         * dependency injection of the ORM instance associated with this Model instance.
+         */
+        public function __construct($orm) {
+            if (! $orm instanceof ORM) {
+                throw new Exception('$orm must be an instanceof Idiorm ORM!');
+            }
+
+            $this->orm = $orm;
+        }
 
         /**
          * Retrieve the value of a static property on a class. If the
@@ -383,13 +395,6 @@
                 ->select("{$associated_table_name}.*")
                 ->join($join_table_name, array("{$associated_table_name}.{$associated_table_id_column}", '=', "{$join_table_name}.{$key_to_associated_table}"))
                 ->where("{$join_table_name}.{$key_to_base_table}", $this->$base_table_id_column); ;
-        }
-
-        /**
-         * Set the wrapped ORM instance associated with this Model instance.
-         */
-        public function set_orm($orm) {
-            $this->orm = $orm;
         }
 
         /**
