@@ -213,4 +213,13 @@ class ParisTest extends PHPUnit_Framework_TestCase {
         $ORMWrapper = Model::factory('Simple');
         $ORMWrapper->noneExistentFunction();
     }
+
+    /**
+     * Regression tests
+     */
+    public function testIssue80RecursiveErrorFromInstantiatingModelClass() {
+        $user = new User();
+        $this->assertInstanceOf('User', $user);
+        $this->assertSame($user->orm, null);
+    }
 }
