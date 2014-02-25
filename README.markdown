@@ -1,7 +1,7 @@
 Paris
 =====
 
-[![Build Status](https://travis-ci.org/j4mie/paris.png?branch=master)](https://travis-ci.org/j4mie/paris)
+[![Build Status](https://travis-ci.org/j4mie/paris.png?branch=master)](https://travis-ci.org/j4mie/paris) [![Latest Stable Version](https://poser.pugx.org/j4mie/paris/v/stable.png)](https://packagist.org/packages/j4mie/paris) [![Total Downloads](https://poser.pugx.org/j4mie/paris/downloads.png)](https://packagist.org/packages/j4mie/paris)
 
 [http://j4mie.github.com/idiormandparis/](http://j4mie.github.com/idiormandparis/)
 
