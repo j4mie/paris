@@ -517,6 +517,9 @@
          */
         public function __call($name, $arguments) {
             $method = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
-            return call_user_func_array(array($this, $method), $arguments);
+            if(method_exists($this, $method)) {
+               return call_user_func_array(array($this, $method), $arguments);
+            }
+            trigger_error(sprintf('Call to undefined method %s::%s()', get_called_class(), $name), E_USER_ERROR);
         }
     }
