@@ -190,12 +190,26 @@
          * Static method to get a table name given a class name.
          * If the supplied class has a public static property
          * named $_table, the value of this property will be
-         * returned. If not, the class name will be converted using
+         * returned.
+         *
+         * If not, the class name will be converted using
          * the _class_name_to_table_name method method.
+         *
+         * If public static property $_table_use_short_name == true
+         * then $class_name passed to _class_name_to_table_name is
+         * stripped of namespace information.
+         *
          */
         protected static function _get_table_name($class_name) {
             $specified_table_name = self::_get_static_property($class_name, '_table');
             if (is_null($specified_table_name)) {
+                $use_short_class_name =
+                    self::_get_static_property($class_name, '_table_use_short_name');
+
+                if ($use_short_class_name) {
+                    $class_name = end(explode('\\', $class_name));
+                }
+
                 return self::_class_name_to_table_name($class_name);
             }
             return $specified_table_name;
