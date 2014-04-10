@@ -1,5 +1,8 @@
 <?php
 
+use test\name\space\ModelWithCustomNamespace;
+use test\name\space\ModelWithCustomNamespaceToIgnore;
+
 class ParisTest extends PHPUnit_Framework_TestCase {
 
     const ALTERNATE = 'alternate';
@@ -26,6 +29,18 @@ class ParisTest extends PHPUnit_Framework_TestCase {
     public function testComplexModelClassName() {
         Model::factory('ComplexModelClassName')->find_many();
         $expected = 'SELECT * FROM `complex_model_class_name`';
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
+    public function testModelClassNameWithNamespace() {
+        ModelWithCustomNamespace::find_many();
+        $expected = 'SELECT * FROM `test_name_space_model_with_custom_namespace`';
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
+    public function testModelClassNameWithNamespaceIgnored() {
+        ModelWithCustomNamespaceToIgnore::find_many();
+        $expected = 'SELECT * FROM `model_with_custom_namespace_to_ignore`';
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
