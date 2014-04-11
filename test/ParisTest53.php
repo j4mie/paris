@@ -25,6 +25,12 @@ class ParisTest53 extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
     }
 
+    public function testIgnoredNamespaceTableName() {
+        IgnoreNamespace::find_many();
+        $expected = 'SELECT * FROM `ignore_namespace`';
+        $this->assertEquals($expected, ORM::get_last_query());
+    }
+
     public function testModelWithCustomTable() {
         Model::factory('ModelWithCustomTable')->find_many();
         $expected = 'SELECT * FROM `custom_table`';
@@ -42,4 +48,7 @@ class ParisTest53 extends PHPUnit_Framework_TestCase {
 class Simple extends Model { }
 class ModelWithCustomTable extends Model {
     public static $_table = 'custom_table';
+}
+class IgnoreNamespace extends Model {
+    public static $_table_use_short_name = true;
 }
