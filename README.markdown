@@ -76,6 +76,7 @@ Changelog
 
 * Prevent invalid method calls from triggering infinite recursion [[michaelward82](https://github.com/michaelward82)] - [issue #75](https://github.com/j4mie/idiorm/issues/75)
 * Add HHVM to travis-ci build matrix [[ptarjan](https://github.com/ptarjan)] - [issue #81](https://github.com/j4mie/idiorm/issues/81)
+* Improve join documentation [[rhynodesigns](https://github.com/rhynodesigns)] - [issue #92](https://github.com/j4mie/idiorm/issues/92)
 
 #### 1.4.2 - released 2013-12-12
 
