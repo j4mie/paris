@@ -427,6 +427,7 @@
          */
         public function set($property, $value = null) {
             $this->orm->set($property, $value);
+            return $this;
         }
 
         /**
@@ -436,6 +437,7 @@
          */
         public function set_expr($property, $value = null) {
             $this->orm->set_expr($property, $value);
+            return $this;
         }
 
         /**
