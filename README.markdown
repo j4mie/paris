@@ -76,6 +76,7 @@ Changelog
 
 * Allows static calling of Model subclasses, ignoring namespace info during table name generation [[michaelward82](https://github.com/michaelward82)] - [issue #90](https://github.com/j4mie/paris/issues/90)
 * Prevent invalid method calls from triggering infinite recursion [[michaelward82](https://github.com/michaelward82)] - [issue #75](https://github.com/j4mie/idiorm/issues/75)
+* Allow chaining of the `set()` and `set_expr()` methods [[naga3](https://github.com/naga3)] - [issue #94](https://github.com/j4mie/paris/issues/94)
 * Add HHVM to travis-ci build matrix [[ptarjan](https://github.com/ptarjan)] - [issue #81](https://github.com/j4mie/idiorm/issues/81)
 * Improve join documentation [[rhynodesigns](https://github.com/rhynodesigns)] - [issue #92](https://github.com/j4mie/paris/issues/92)
 * Improve code docblock [[michaelward82](https://github.com/michaelward82)] - [issue #91](https://github.com/j4mie/paris/issues/91)
