@@ -8,7 +8,9 @@ Paris
 ---
 ### Feature complete
 
-Paris is now considered to be feature complete as of version 1.4.0. Whilst it will continue to be maintained with bug fixes there will be no further new features added.
+Paris is now considered to be feature complete as of version 1.5.0. Whilst it will continue to be maintained with bug fixes there will be no further new features added from this point on.
+
+**Please do not submit feature requests or pull requests adding new features as they will be closed without ceremony.**
 
 ---
 
