@@ -74,7 +74,7 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
-#### 1.5.0 - released 2014-01-XX
+#### 1.5.0 - released 2014-06-22
 
 * Allows static calling of Model subclasses, ignoring namespace info during table name generation [[michaelward82](https://github.com/michaelward82)] - [issue #90](https://github.com/j4mie/paris/issues/90)
 * Prevent invalid method calls from triggering infinite recursion [[michaelward82](https://github.com/michaelward82)] - [issue #75](https://github.com/j4mie/idiorm/issues/75)
