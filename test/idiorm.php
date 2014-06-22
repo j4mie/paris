@@ -72,6 +72,7 @@
             'logging' => false,
             'logger' => null,
             'caching' => false,
+            'caching_auto_clear' => false,
             'return_result_sets' => false,
         );
 
@@ -410,7 +411,17 @@
             $statement = self::get_db($connection_name)->prepare($query);
             self::$_last_statement = $statement;
             $time = microtime(true);
-            $q = $statement->execute($parameters);
+
+            $count = count($parameters);
+            for ($i = 0; $i < $count; $i++) {
+                $type = PDO::PARAM_STR;
+                if (is_null($parameters[$i])) $type = PDO::PARAM_NULL;
+                if (is_bool($parameters[$i])) $type = PDO::PARAM_BOOL;
+                if (is_int($parameters[$i])) $type = PDO::PARAM_INT;
+                $statement->bindParam($i + 1, $parameters[$i], $type);
+            }
+
+            $q = $statement->execute();
             self::_log_query($query, $parameters, $connection_name, (microtime(true)-$time));
 
             return $q;
@@ -1748,7 +1759,10 @@
         /**
          * Create a cache key for the given query and parameters.
          */
-        protected static function _create_cache_key($query, $parameters) {
+        protected static function _create_cache_key($query, $parameters, $table_name = null, $connection_name = self::DEFAULT_CONNECTION) {
+            if(isset(self::$_config[$connection_name]['create_cache_key']) and is_callable(self::$_config[$connection_name]['create_cache_key'])){
+                return call_user_func_array(self::$_config[$connection_name]['create_cache_key'], array($query, $parameters, $table_name, $connection_name));
+            }
             $parameter_string = join(',', $parameters);
             $key = $query . ':' . $parameter_string;
             return sha1($key);
@@ -1758,8 +1772,10 @@
          * Check the query cache for the given cache key. If a value
          * is cached for the key, return the value. Otherwise, return false.
          */
-        protected static function _check_query_cache($cache_key, $connection_name = self::DEFAULT_CONNECTION) {
-            if (isset(self::$_query_cache[$connection_name][$cache_key])) {
+        protected static function _check_query_cache($cache_key, $table_name = null, $connection_name = self::DEFAULT_CONNECTION) {
+            if(isset(self::$_config[$connection_name]['check_query_cache']) and is_callable(self::$_config[$connection_name]['check_query_cache'])){
+                return call_user_func_array(self::$_config[$connection_name]['check_query_cache'], array($cache_key, $table_name, $connection_name));
+            } elseif (isset(self::$_query_cache[$connection_name][$cache_key])) {
                 return self::$_query_cache[$connection_name][$cache_key];
             }
             return false;
@@ -1768,15 +1784,20 @@
         /**
          * Clear the query cache
          */
-        public static function clear_cache() {
+        public static function clear_cache($table_name = null, $connection_name = self::DEFAULT_CONNECTION) {
             self::$_query_cache = array();
+            if(isset(self::$_config[$connection_name]['clear_cache']) and is_callable(self::$_config[$connection_name]['clear_cache'])){
+                return call_user_func_array(self::$_config[$connection_name]['clear_cache'], array($table_name, $connection_name));
+            }
         }
 
         /**
          * Add the given value to the query cache.
          */
-        protected static function _cache_query_result($cache_key, $value, $connection_name = self::DEFAULT_CONNECTION) {
-            if (!isset(self::$_query_cache[$connection_name])) {
+        protected static function _cache_query_result($cache_key, $value, $table_name = null, $connection_name = self::DEFAULT_CONNECTION) {
+            if(isset(self::$_config[$connection_name]['cache_query_result']) and is_callable(self::$_config[$connection_name]['cache_query_result'])){
+                return call_user_func_array(self::$_config[$connection_name]['cache_query_result'], array($cache_key, $value, $table_name, $connection_name));
+            } elseif (!isset(self::$_query_cache[$connection_name])) {
                 self::$_query_cache[$connection_name] = array();
             }
             self::$_query_cache[$connection_name][$cache_key] = $value;
@@ -1791,8 +1812,8 @@
             $caching_enabled = self::$_config[$this->_connection_name]['caching'];
 
             if ($caching_enabled) {
-                $cache_key = self::_create_cache_key($query, $this->_values);
-                $cached_result = self::_check_query_cache($cache_key, $this->_connection_name);
+                $cache_key = self::_create_cache_key($query, $this->_values, $this->_table_name, $this->_connection_name);
+                $cached_result = self::_check_query_cache($cache_key, $this->_table_name, $this->_connection_name);
 
                 if ($cached_result !== false) {
                     return $cached_result;
@@ -1808,7 +1829,7 @@
             }
 
             if ($caching_enabled) {
-                self::_cache_query_result($cache_key, $rows, $this->_connection_name);
+                self::_cache_query_result($cache_key, $rows, $this->_table_name, $this->_connection_name);
             }
 
             // reset Idiorm after executing the query
@@ -1869,8 +1890,22 @@
         /**
          * Get the primary key ID of this object.
          */
-        public function id() {
-            return $this->get($this->_get_id_column_name());
+        public function id($disallow_null = false) {
+            $id = $this->get($this->_get_id_column_name());
+
+            if ($disallow_null) {
+                if (is_array($id)) {
+                    foreach ($id as $id_part) {
+                        if ($id_part === null) {
+                            throw new Exception('Primary key ID contains null value(s)');
+                        }
+                    }
+                } else if ($id === null) {
+                    throw new Exception('Primary key ID missing from row or is null');
+                }
+            }
+
+            return $id;
         }
 
         /**
@@ -1951,7 +1986,7 @@
                     return true;
                 }
                 $query = $this->_build_update();
-                $id = $this->id();
+                $id = $this->id(true);
                 if (is_array($id)) {
                     $values = array_merge($values, array_values($id));
                 } else {
@@ -1962,7 +1997,10 @@
             }
 
             $success = self::_execute($query, $values, $this->_connection_name);
-
+            $caching_auto_clear_enabled = self::$_config[$this->_connection_name]['caching_auto_clear'];
+            if($caching_auto_clear_enabled){
+                self::clear_cache($this->_table_name, $this->_connection_name);
+            }
             // If we've just inserted a new record, set the ID of this object
             if ($this->_is_new) {
                 $this->_is_new = false;
@@ -2058,7 +2096,7 @@
                 $this->_quote_identifier($this->_table_name)
             );
             $this->_add_id_column_conditions($query);
-            return self::_execute(join(" ", $query), is_array($this->id()) ? array_values($this->id()) : array($this->id()), $this->_connection_name);
+            return self::_execute(join(" ", $query), is_array($this->id(true)) ? array_values($this->id(true)) : array($this->id(true)), $this->_connection_name);
         }
 
         /**
@@ -2081,7 +2119,7 @@
         // --------------------- //
 
         public function offsetExists($key) {
-            return isset($this->_data[$key]);
+            return array_key_exists($key, $this->_data);
         }
 
         public function offsetGet($key) {
