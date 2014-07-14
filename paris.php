@@ -535,7 +535,7 @@
          *
          * @param  string|array $property
          * @param  string|null  $value
-         * @return void
+         * @return Model
          */
         public function set($property, $value = null) {
             $this->orm->set($property, $value);
@@ -547,7 +547,7 @@
          *
          * @param  string|array $property
          * @param  string|null  $value
-         * @return void
+         * @return Model
          */
         public function set_expr($property, $value = null) {
             $this->orm->set_expr($property, $value);
