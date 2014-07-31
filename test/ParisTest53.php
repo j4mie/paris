@@ -36,6 +36,11 @@ class ParisTest53 extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, ORM::get_last_query());
 
         Model::$short_table_names = false;
+        MustUseGlobalNamespaceConfig::find_many();
+        $expected = 'SELECT * FROM `paris_tests_must_use_global_namespace_config`';
+        $this->assertEquals($expected, ORM::get_last_query());
+
+        Model::$short_table_names = false;
         MustNotIgnoreNamespace::find_many();
         $expected = 'SELECT * FROM `paris_tests_must_not_ignore_namespace`';
         $this->assertEquals($expected, ORM::get_last_query());
@@ -49,6 +54,11 @@ class ParisTest53 extends PHPUnit_Framework_TestCase {
         Model::$short_table_names = true;
         MustIgnoreNamespace::find_many();
         $expected = 'SELECT * FROM `must_ignore_namespace`';
+        $this->assertEquals($expected, ORM::get_last_query());
+
+        Model::$short_table_names = true;
+        MustUseGlobalNamespaceConfig::find_many();
+        $expected = 'SELECT * FROM `must_use_global_namespace_config`';
         $this->assertEquals($expected, ORM::get_last_query());
 
         Model::$short_table_names = false;
@@ -80,4 +90,7 @@ class MustIgnoreNamespace extends Model {
 }
 class MustNotIgnoreNamespace extends Model {
     public static $_table_use_short_name = false;
+}
+class MustUseGlobalNamespaceConfig extends Model {
+    public static $_table_use_short_name = null;
 }
