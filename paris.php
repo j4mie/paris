@@ -191,6 +191,17 @@
         public static $auto_prefix_models = null;
 
         /**
+         * Set true to to ignore namespace information when computing table names
+         * from class names.
+         *
+         * @example Model::$short_table_names = true;
+         * @example Model::$short_table_names = false; // default
+         *
+         * @var bool $short_table_names
+         */
+        public static $short_table_names = false;
+
+        /**
          * The ORM instance used by this model 
          * instance to communicate with the database.
          *
@@ -225,17 +236,18 @@
          * If not, the class name will be converted using
          * the _class_name_to_table_name method method.
          *
-         * If public static property $_table_use_short_name == true
-         * then $class_name passed to _class_name_to_table_name is
-         * stripped of namespace information.
+         * If Model::$short_table_names == true or public static
+         * property $_table_use_short_name == true then $class_name passed
+         * to _class_name_to_table_name is stripped of namespace information.
          *
          * @param  string $class_name
-         * @return string
+         *
+*@return string
          */
         protected static function _get_table_name($class_name) {
             $specified_table_name = self::_get_static_property($class_name, '_table');
-            $use_short_class_name =
-                self::_get_static_property($class_name, '_table_use_short_name');
+
+            $use_short_class_name = self::_use_short_table_name($class_name);
 
             if ($use_short_class_name) {
                 $exploded_class_name = explode('\\', $class_name);
@@ -246,6 +258,20 @@
                 return self::_class_name_to_table_name($class_name);
             }
             return $specified_table_name;
+        }
+
+        /**
+         * Should short table names, disregarding class namespaces, be computed?
+         *
+         * $class_property overrides $global_option, unless $class_property is null
+         *
+         * @param string $class_name
+         * @return bool
+         */
+        protected static function _use_short_table_name($class_name) {
+            $global_option = self::$short_table_names;
+            $class_property = self::_get_static_property($class_name, '_table_use_short_name');
+            return is_null($class_property) ? $global_option : $class_property;
         }
 
         /**

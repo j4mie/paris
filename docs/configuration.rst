@@ -62,6 +62,30 @@ Here is a namespaced example to make it clearer:
     individual model classes. As documented in the :doc:`Models` section of
     the documentation.
 
+Model prefixing
+~~~~~~~~~~~~~~~
+
+Setting: ``Model::$short_table_names``
+
+Set as ``true`` to disregard namespace information when computing table names
+from class names.
+
+By default the class ``\Models\CarTyre`` expects the table name ``models_car_tyre``.
+With ``Model::$short_table_names = true`` the class ``\Models\CarTyre`` expects the
+table name ``car_tyre``.
+
+.. code-block:: php
+
+    <?php
+
+    Model::$short_table_names = true;
+    Model::factory('CarTyre')->find_many(); // SQL executed: SELECT * FROM `car_tyre`
+
+    namespace Models {
+        class CarTyre extends Model {
+
+        }
+    }
 
 Further Configuration
 ~~~~~~~~~~~~~~~~~~~~~
