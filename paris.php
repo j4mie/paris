@@ -155,7 +155,7 @@
          * empty instance of the class associated with
          * this wrapper instead of the raw ORM class.
          *
-         *  return ORMWrapper|bool
+         * @return ORMWrapper|bool
          */
         public function create($data=null) {
             return $this->_create_model_instance(parent::create($data));
