@@ -48,6 +48,10 @@
      * You shouldn't need to interact with this class
      * directly. It is used internally by the Model base
      * class.
+     * @method void setClassName($class_name)
+     * @method static \ORMWrapper forTable($table_name, $connection_name = parent::DEFAULT_CONNECTION)
+     * @method \Model findOne($id=null)
+     * @method Array findMany()
      */
     class ORMWrapper extends ORM {
 
@@ -169,6 +173,11 @@
      * class Widget extends Model {
      * }
      *
+     * @method void setOrm($orm)
+     * @method $this setExpr($property, $value = null)
+     * @method bool isDirty($property)
+     * @method bool isNew()
+     * @method Array asArray()
      */
     class Model {
 
