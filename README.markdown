@@ -74,6 +74,14 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
+#### 1.5.6 - released 2014-10-01
+
+* Added @method tags for magic methods [[stellis](https://github.com/stellis)]
+
+#### 1.5.5 - released 2014-10-01
+
+* Added missing '@' for a @return tag for create() method [[stellis](https://github.com/stellis)]
+
 #### 1.5.4 - released 2014-09-23
 
 * Corrects return value in docblock for 2 Model functions [[michaelward82](https://github.com/michaelward82)] - [issue #99](https://github.com/j4mie/paris/pull/99)
