@@ -74,6 +74,8 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
+* Corrects missing __unset syntax.
+
 #### 1.5.4 - released 2014-09-23
 
 * Corrects return value in docblock for 2 Model functions [[michaelward82](https://github.com/michaelward82)] - [issue #99](https://github.com/j4mie/paris/pull/99)
