@@ -564,6 +564,16 @@
         }
 
         /**
+         * Magic unset method, allows unset($model->property)
+         *
+         * @param  string $property
+         * @return void
+         */
+        public function __unset($property) {
+            $this->orm->__unset($property);
+        }
+
+        /**
          * Magic isset method, allows isset($model->property) to work correctly.
          *
          * @param  string $property
