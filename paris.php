@@ -191,6 +191,25 @@
         public static $auto_prefix_models = null;
 
         /**
+         * Set a prefix for table names.
+         *
+         * The model name is \system\models\model,
+         * and the table name is sys_model.
+         * Write like this:
+         *
+         * Model::$auto_prefix_models = '\\system\\models\\';
+         * Model::$auto_prefix_tables = 'sys_';
+         * namespace system\models;
+         * class Model extends \Model
+         * {
+         *      public static $_table_use_short_name = true;
+         * }
+         *
+         * @var string $auto_prefix_tables
+         */
+        public static $auto_prefix_tables = null;
+
+        /**
          * The ORM instance used by this model 
          * instance to communicate with the database.
          *
@@ -243,7 +262,7 @@
             }
 
             if (is_null($specified_table_name)) {
-                return self::_class_name_to_table_name($class_name);
+                return self::$auto_prefix_tables . self::_class_name_to_table_name($class_name);
             }
             return $specified_table_name;
         }
