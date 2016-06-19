@@ -234,6 +234,11 @@
          */
         protected static function _get_table_name($class_name) {
             $specified_table_name = self::_get_static_property($class_name, '_table');
+            
+            if (!is_null($specified_table_name)) {
+               return $specified_table_name;
+            }
+            
             $use_short_class_name =
                 self::_get_static_property($class_name, '_table_use_short_name');
 
@@ -241,11 +246,9 @@
                 $exploded_class_name = explode('\\', $class_name);
                 $class_name = end($exploded_class_name);
             }
-
-            if (is_null($specified_table_name)) {
-                return self::_class_name_to_table_name($class_name);
-            }
-            return $specified_table_name;
+            
+            return self::_class_name_to_table_name($class_name);
+            
         }
 
         /**
