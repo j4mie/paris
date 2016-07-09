@@ -87,8 +87,8 @@ passing the name of the column to use.
 In addition, Paris assumes that the foreign key column in the current (base)
  table is the primary key column of the base table. In the example above, 
 Paris will use the column called ``user_id`` (assuming ``user_id`` is the 
-primary key for the user table) in the base table (in this case the user table) 
-as the foreign key column in the base table. To override this behaviour, 
+primary key for the user table) in the base table (in this case the profile table) 
+as the foreign key column in the related table. To override this behaviour, 
 add a third argument to your ``has_one call``, passing the name of the column 
 you intend to use as the foreign key column in the base table.
 
