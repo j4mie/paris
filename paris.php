@@ -39,6 +39,8 @@
     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     *
     */
+    
+    namespace Idiorm;
 
     /**
      * Subclass of Idiorm's ORM class that supports
