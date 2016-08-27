@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": ">=5.2.0",
-        "j4mie/idiorm": "1.5.*"
+        "anashashmi/idiorm": "1.5.*"
     },
     "autoload": {
         "classmap": ["paris.php"]
