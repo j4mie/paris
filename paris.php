@@ -39,6 +39,8 @@
     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     *
     */
+    
+    namespace Idiorm;
 
     /**
      * Subclass of Idiorm's ORM class that supports
@@ -179,6 +181,10 @@
         // Default foreign key suffix used by relationship methods
         const DEFAULT_FOREIGN_KEY_SUFFIX = '_id';
 
+        // The ORM wrapper class to use. If you have subclassed or replaced
+        // ORMWrapper (above) you may set this to your preferred class.
+        protected static $_orm_wrapper_class = 'ORMWrapper';
+
         /**
          * Set a prefix for model names. This can be a namespace or any other
          * abitrary prefix such as the PEAR naming convention.
@@ -189,7 +195,26 @@
          * @var string $auto_prefix_models
          */
         public static $auto_prefix_models = null;
-
+        
+         /**
+         * Set a prefix for table names.
+         *
+         * The model name is \system\models\model,
+         * and the table name is sys_model.
+         * Write like this:
+         *
+         * Model::$auto_prefix_models = '\\system\\models\\';
+         * Model::$auto_prefix_tables = 'sys_';
+         * namespace system\models;
+         * class Model extends \Model
+         * {
+         *      public static $_table_use_short_name = true;
+         * }
+         *
+         * @var string $auto_prefix_tables
+         */
+        public static $auto_prefix_tables = null;
+        
         /**
          * The ORM instance used by this model 
          * instance to communicate with the database.
@@ -234,6 +259,11 @@
          */
         protected static function _get_table_name($class_name) {
             $specified_table_name = self::_get_static_property($class_name, '_table');
+            
+            if (!is_null($specified_table_name)) {
+               return $specified_table_name;
+            }
+            
             $use_short_class_name =
                 self::_get_static_property($class_name, '_table_use_short_name');
 
@@ -241,11 +271,9 @@
                 $exploded_class_name = explode('\\', $class_name);
                 $class_name = end($exploded_class_name);
             }
-
-            if (is_null($specified_table_name)) {
-                return self::_class_name_to_table_name($class_name);
-            }
-            return $specified_table_name;
+            
+            return self::_class_name_to_table_name($class_name);
+            
         }
 
         /**
@@ -322,7 +350,8 @@
                    ORMWrapper::DEFAULT_CONNECTION
                );
             }
-            $wrapper = ORMWrapper::for_table($table_name, $connection_name);
+            $orm_wrapper_class = self::$_orm_wrapper_class;
+            $wrapper = call_user_func(array($orm_wrapper_class, 'for_table'), $table_name, $connection_name);
             $wrapper->set_class_name($class_name);
             $wrapper->use_id_column(self::_get_id_column_name($class_name));
             return $wrapper;

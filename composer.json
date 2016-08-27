@@ -1,31 +1,23 @@
 {
-    "name": "j4mie/paris",
+    "name": "anashashmi/paris",
     "type": "library",
-    "description": "A lightweight Active Record implementation for PHP5, built on top of Idiorm",
-    "keywords": ["paris", "orm", "active record", "model"],
+    "description": "A lightweight Active Record implementation for PHP5, built on top of Idiorm, forked from j4mie by Anas Hashmi.",
+    "keywords": ["paris", "orm", "active record", "model", "idiorm"],
     "homepage": "http://j4mie.github.com/idiormandparis",
     "support": {
-        "issues": "https://github.com/j4mie/paris/issues",
-        "source": "https://github.com/j4mie/paris"
+        "issues": "https://github.com/anashashmi/paris/issues",
+        "source": "https://github.com/anashashmi/paris"
     },
     "authors": [
         {
             "name": "Jamie Matthews",
             "email": "jamie.matthews@gmail.com",
             "homepage": "http://j4mie.org",
+            "role": "Originator"
+        },
+        {
+            "name": "Anas Hashmi",
             "role": "Developer"
-        },
-        {
-            "name": "Simon Holywell",
-            "email": "treffynnon@php.net",
-            "homepage": "http://simonholywell.com",
-            "role": "Maintainer"
-        },
-        {
-            "name": "Durham Hale",
-            "email": "me@durhamhale.com",
-            "homepage": "http://durhamhale.com",
-            "role": "Maintainer"
         }
     ],
     "license": [
@@ -35,7 +27,7 @@
     ],
     "require": {
         "php": ">=5.2.0",
-        "j4mie/idiorm": "1.5.*"
+        "anashashmi/idiorm": "1.5.*"
     },
     "autoload": {
         "classmap": ["paris.php"]
