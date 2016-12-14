@@ -56,12 +56,40 @@ Here is a namespaced example to make it clearer:
     Model::factory('Simple')->find_many(); // SQL executed: SELECT * FROM `tests_simple`
     Model::factory('SimpleUser')->find_many(); // SQL executed: SELECT * FROM `tests_simple_user`
 
+Model prefixes are only compatible with the ``Model::factory()`` methods described above.
+Where the shorter ``SimpleUser::find_many()`` style syntax is used, the addition of a
+Model prefix will cause ``Class not found`` errors.
+
 .. note::
 
-    It is possible to define the table name by setting ``$_table`` in your
-    individual model classes. As documented in the :doc:`Models` section of
-    the documentation.
+    Model class property ``$_table`` sets an explicit table name, ignoring the
+    ``$auto_prefix_models`` property in your individual model classes. See documentation in
+    the :doc:`Models` section of the documentation.
 
+Model prefixing
+~~~~~~~~~~~~~~~
+
+Setting: ``Model::$short_table_names``
+
+Set as ``true`` to disregard namespace information when computing table names
+from class names.
+
+By default the class ``\Models\CarTyre`` expects the table name ``models_car_tyre``.
+With ``Model::$short_table_names = true`` the class ``\Models\CarTyre`` expects the
+table name ``car_tyre``.
+
+.. code-block:: php
+
+    <?php
+
+    Model::$short_table_names = true;
+    Model::factory('CarTyre')->find_many(); // SQL executed: SELECT * FROM `car_tyre`
+
+    namespace Models {
+        class CarTyre extends Model {
+
+        }
+    }
 
 Further Configuration
 ~~~~~~~~~~~~~~~~~~~~~

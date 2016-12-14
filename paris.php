@@ -48,6 +48,16 @@
      * You shouldn't need to interact with this class
      * directly. It is used internally by the Model base
      * class.
+     *
+     *
+     * The methods documented below are magic methods that conform to PSR-1.
+     * This documentation exposes these methods to doc generators and IDEs.
+     * @see http://www.php-fig.org/psr/psr-1/
+     *
+     * @method void setClassName($class_name)
+     * @method static \ORMWrapper forTable($table_name, $connection_name = parent::DEFAULT_CONNECTION)
+     * @method \Model findOne($id=null)
+     * @method Array findMany()
      */
     class ORMWrapper extends ORM {
 
@@ -155,7 +165,7 @@
          * empty instance of the class associated with
          * this wrapper instead of the raw ORM class.
          *
-         *  return ORMWrapper|bool
+         * @return ORMWrapper|bool
          */
         public function create($data=null) {
             return $this->_create_model_instance(parent::create($data));
@@ -169,6 +179,16 @@
      * class Widget extends Model {
      * }
      *
+     *
+     * The methods documented below are magic methods that conform to PSR-1.
+     * This documentation exposes these methods to doc generators and IDEs.
+     * @see http://www.php-fig.org/psr/psr-1/
+     *
+     * @method void setOrm($orm)
+     * @method $this setExpr($property, $value = null)
+     * @method bool isDirty($property)
+     * @method bool isNew()
+     * @method Array asArray()
      */
     class Model {
 
@@ -189,6 +209,17 @@
          * @var string $auto_prefix_models
          */
         public static $auto_prefix_models = null;
+
+        /**
+         * Set true to to ignore namespace information when computing table names
+         * from class names.
+         *
+         * @example Model::$short_table_names = true;
+         * @example Model::$short_table_names = false; // default
+         *
+         * @var bool $short_table_names
+         */
+        public static $short_table_names = false;
 
         /**
          * The ORM instance used by this model 
@@ -225,17 +256,18 @@
          * If not, the class name will be converted using
          * the _class_name_to_table_name method method.
          *
-         * If public static property $_table_use_short_name == true
-         * then $class_name passed to _class_name_to_table_name is
-         * stripped of namespace information.
+         * If Model::$short_table_names == true or public static
+         * property $_table_use_short_name == true then $class_name passed
+         * to _class_name_to_table_name is stripped of namespace information.
          *
          * @param  string $class_name
-         * @return string
+         *
+*@return string
          */
         protected static function _get_table_name($class_name) {
             $specified_table_name = self::_get_static_property($class_name, '_table');
-            $use_short_class_name =
-                self::_get_static_property($class_name, '_table_use_short_name');
+
+            $use_short_class_name = self::_use_short_table_name($class_name);
 
             if ($use_short_class_name) {
                 $exploded_class_name = explode('\\', $class_name);
@@ -246,6 +278,20 @@
                 return self::_class_name_to_table_name($class_name);
             }
             return $specified_table_name;
+        }
+
+        /**
+         * Should short table names, disregarding class namespaces, be computed?
+         *
+         * $class_property overrides $global_option, unless $class_property is null
+         *
+         * @param string $class_name
+         * @return bool
+         */
+        protected static function _use_short_table_name($class_name) {
+            $global_option = self::$short_table_names;
+            $class_property = self::_get_static_property($class_name, '_table_use_short_name');
+            return is_null($class_property) ? $global_option : $class_property;
         }
 
         /**
@@ -439,12 +485,19 @@
             // formed by concatenating the names of the base class
             // and the associated class, in alphabetical order.
             if (is_null($join_class_name)) {
-                $model = explode('\\', $base_class_name);
-                $model_name = end($model);
-                if (substr($model_name, 0, strlen(self::$auto_prefix_models)) == self::$auto_prefix_models) {
-                    $model_name = substr($model_name, strlen(self::$auto_prefix_models), strlen($model_name));
+                $base_model = explode('\\', $base_class_name);
+                $base_model_name = end($base_model);
+                if (substr($base_model_name, 0, strlen(self::$auto_prefix_models)) == self::$auto_prefix_models) {
+                    $base_model_name = substr($base_model_name, strlen(self::$auto_prefix_models), strlen($base_model_name));
                 }
-                $class_names = array($model_name, $associated_class_name);
+                // Paris wasn't checking the name settings for the associated class.
+                $associated_model = explode('\\', $associated_class_name);
+                $associated_model_name = end($associated_model);
+                if (substr($associated_model_name, 0, strlen(self::$auto_prefix_models)) == self::$auto_prefix_models) {
+                    $associated_model_name = substr($associated_model_name, strlen(self::$auto_prefix_models), strlen($associated_model_name));
+                }
+                $class_names = array($base_model_name, $associated_model_name);
+                
                 sort($class_names, SORT_STRING);
                 $join_class_name = join("", $class_names);
             }
@@ -508,6 +561,16 @@
          */
         public function __set($property, $value) {
             $this->orm->set($property, $value);
+        }
+
+        /**
+         * Magic unset method, allows unset($model->property)
+         *
+         * @param  string $property
+         * @return void
+         */
+        public function __unset($property) {
+            $this->orm->__unset($property);
         }
 
         /**
