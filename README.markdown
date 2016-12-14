@@ -80,6 +80,7 @@ Changelog
 * Add phpunit as dev dependency and composer script (`composer test`) to easily run tests [[Treffynnon](https://github.com/Treffynnon)]
 * Global setting to allow static requests to avoid being forced in to using the namespace + class as the auto table name [[michaelward82](https://github.com/michaelward82)] - [issue #100](https://github.com/j4mie/paris/issues/100)
 * Document conflict between static Model calling and auto_prefix_models [[michaelward82](https://github.com/michaelward82)] - [issue #102](https://github.com/j4mie/paris/issues/102)
+* Added @method tags for magic methods [[stellis](https://github.com/stellis)] - [issue #104](https://github.com/j4mie/paris/issues/104)
 
 #### 1.5.4 - released 2014-09-23
 
