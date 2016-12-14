@@ -74,7 +74,7 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
-#### 1.5.5 - released 2016-XX-XX
+#### 1.5.5 - released 2016-12-14
 
 * Fix join table name not generated correclty [[Ralphunter](https://github.com/Ralphunter)] - [issue #109](https://github.com/j4mie/paris/pull/109)
 * Add phpunit as dev dependency and composer script (`composer test`) to easily run tests [[Treffynnon](https://github.com/Treffynnon)]
@@ -82,6 +82,7 @@ Changelog
 * Document conflict between static Model calling and auto_prefix_models [[michaelward82](https://github.com/michaelward82)] - [issue #102](https://github.com/j4mie/paris/issues/102)
 * Added @method tags for magic methods [[stellis](https://github.com/stellis)] - [issue #104](https://github.com/j4mie/paris/issues/104)
 * Add missing `__unset()` magic method [[qyanu](https://github.com/qyanu)] - [issue #106](https://github.com/j4mie/paris/issues/106)
+* Remove PHP 5.2 from travis-ci containers to test against (**note** Idiorm still supports PHP 5.2 despite this) [[Treffynnon](https://github.com/treffynnon)]
 
 #### 1.5.4 - released 2014-09-23
 
