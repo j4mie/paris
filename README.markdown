@@ -74,6 +74,11 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
+#### 1.5.5 - released 2016-XX-XX
+
+* Fix join table name not generated correclty [[Ralphunter](https://github.com/Ralphunter)] - [issue #109](https://github.com/j4mie/paris/pull/109)
+* Add phpunit as dev dependency and composer script (`composer test`) to easily run tests [[Treffynnon](https://github.com/Treffynnon)]
+
 #### 1.5.4 - released 2014-09-23
 
 * Corrects return value in docblock for 2 Model functions [[michaelward82](https://github.com/michaelward82)] - [issue #99](https://github.com/j4mie/paris/pull/99)
