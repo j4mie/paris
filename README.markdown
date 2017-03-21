@@ -74,9 +74,14 @@ foreach ($tweets as $tweet) {
 Changelog
 ---------
 
+#### 1.5.6 - released 2017-03-21
+
+* Allow IDE's to autocomplete when `foreach` over `find_many()` result [[stratoss](https://github.com/stratoss)] - [issue #128](https://github.com/j4mie/paris/pull/128)
+* Document the @property PHPDoc comment for IDE autocomplete of model properties [[Treffynnon](https://github.com/Treffynnon)]
+
 #### 1.5.5 - released 2016-12-14
 
-* Fix join table name not generated correclty [[Ralphunter](https://github.com/Ralphunter)] - [issue #109](https://github.com/j4mie/paris/pull/109)
+* Fix join table name not generated correctly [[Ralphunter](https://github.com/Ralphunter)] - [issue #109](https://github.com/j4mie/paris/pull/109)
 * Add phpunit as dev dependency and composer script (`composer test`) to easily run tests [[Treffynnon](https://github.com/Treffynnon)]
 * Global setting to allow static requests to avoid being forced in to using the namespace + class as the auto table name [[michaelward82](https://github.com/michaelward82)] - [issue #100](https://github.com/j4mie/paris/issues/100)
 * Document conflict between static Model calling and auto_prefix_models [[michaelward82](https://github.com/michaelward82)] - [issue #102](https://github.com/j4mie/paris/issues/102)
