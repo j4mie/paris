@@ -1,7 +1,7 @@
 Models
 ======
 
-Model Classes
+Model classes
 ~~~~~~~~~~~~~
 
 You should create a model class for each entity in your application. For
@@ -21,7 +21,33 @@ populating them with *data* from the database. You can then add
 your application logic. This combination of data and behaviour is the
 essence of the `Active Record pattern`_.
 
-Database Tables
+IDE Auto-complete
+^^^^^^^^^^^^^^^^^
+
+As Paris does not require you to specify a method/function per database column
+it can be difficult to know what properties are available on a particular model.
+Due to the magic nature of PHP's `__get()`_ method it is impossible for an IDE
+to give you autocomplete hints as well.
+
+To work around this you can use PHPDoc comment blocks to list the properties of
+the model. These properties should mirror the names of your database tables
+columns.
+
+.. code-block:: php
+
+    <?php
+    /**
+     * @property int $id
+     * @property string $first_name
+     * @property string $last_name
+     * @property string $email
+     */
+    class User extends Model {
+    }
+
+For more information please see the `PHPDoc manual @property`_ documentation.
+
+Database tables
 ~~~~~~~~~~~~~~~
 
 Your ``User`` class should have a corresponding ``user`` table in your
@@ -63,7 +89,7 @@ add a **public static** property to your class called ``$_table``:
         public static $_table = 'my_user_table';
     }
 
-Auto Prefixing
+Auto prefixing
 ^^^^^^^^^^^^^^
 
 To save having type out model class name prefixes whenever code utilises ``Model::for_table()``
@@ -71,7 +97,7 @@ it is possible to specify a prefix that will be prepended onto the class name.
 
 See the :doc:`Configuration` documentation for more details.
 
-ID Column
+ID column
 ~~~~~~~~~
 
 Paris requires that your database tables have a unique primary key
@@ -90,3 +116,5 @@ called ``$_id_column``:
 does not respect column names specified in Idiorm’s configuration.
 
 .. _Active Record pattern: http://martinfowler.com/eaaCatalog/activeRecord.html
+.. ___get: https://secure.php.net/manual/en/language.oop5.overloading.php#object.get
+.. _PHPDoc manual @property: https://www.phpdoc.org/docs/latest/references/phpdoc/tags/property.html
