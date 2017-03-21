@@ -359,7 +359,7 @@
          */
         public static function factory($class_name, $connection_name = null) {
             $class_name = self::$auto_prefix_models . $class_name;
-            $table_name = self::_get_table_name($class_name);
+            $table_name = static::_get_table_name($class_name);
 
             if ($connection_name == null) {
                $connection_name = self::_get_static_property(
@@ -387,7 +387,7 @@
          * @return ORMWrapper
          */
         protected function _has_one_or_many($associated_class_name, $foreign_key_name=null, $foreign_key_name_in_current_models_table=null, $connection_name=null) {
-            $base_table_name = self::_get_table_name(get_class($this));
+            $base_table_name = static::_get_table_name(get_class($this));
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $base_table_name);
             
             $where_value = ''; //Value of foreign_table.{$foreign_key_name} we're 
@@ -446,7 +446,7 @@
          * @return $this|null
          */
         protected function belongs_to($associated_class_name, $foreign_key_name=null, $foreign_key_name_in_associated_models_table=null, $connection_name=null) {
-            $associated_table_name = self::_get_table_name(self::$auto_prefix_models . $associated_class_name);
+            $associated_table_name = static::_get_table_name(self::$auto_prefix_models . $associated_class_name);
             $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $associated_table_name);
             $associated_object_id = $this->$foreign_key_name;
             
@@ -503,9 +503,9 @@
             }
 
             // Get table names for each class
-            $base_table_name = self::_get_table_name($base_class_name);
-            $associated_table_name = self::_get_table_name(self::$auto_prefix_models . $associated_class_name);
-            $join_table_name = self::_get_table_name(self::$auto_prefix_models . $join_class_name);
+            $base_table_name = static::_get_table_name($base_class_name);
+            $associated_table_name = static::_get_table_name(self::$auto_prefix_models . $associated_class_name);
+            $join_table_name = static::_get_table_name(self::$auto_prefix_models . $join_class_name);
 
             // Get ID column names
             $base_table_id_column = (is_null($key_in_base_table)) ?
